@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2021 $organization$
+/// Copyright (c) 1988-2022 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,30 +13,32 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: main.hpp
+///   File: main_opt.hpp
 ///
 /// Author: $author$
-///   Date: 11/6/2021
+///   Date: 1/4/2022
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_APP_CONSOLE_TALAS_MAIN_HPP
-#define XOS_APP_CONSOLE_TALAS_MAIN_HPP
+#ifndef XOS_APP_CONSOLE_BN_MAIN_OPT_HPP
+#define XOS_APP_CONSOLE_BN_MAIN_OPT_HPP
 
-#include "xos/app/console/talas/main_opt.hpp"
+#include "xos/app/console/version/main.hpp"
+#include "xos/lib/bn/version.hpp"
 
 namespace xos {
 namespace app {
 namespace console {
-namespace talas {
+namespace bn {
 
-/// class maint
+/// class main_optt
 template 
-<class TExtends = xos::app::console::talas::main_opt, 
+<class TExtends = xos::app::console::version::maint<xos::lib::bn::version>, 
  class TImplements = typename TExtends::implements>
-class exported maint: virtual public TImplements, public TExtends {
+
+class exported main_optt: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
     typedef TExtends extends;
-    typedef maint derives;
+    typedef main_optt derives;
 
     typedef typename extends::char_t char_t;
     typedef typename extends::end_char_t end_char_t;
@@ -47,37 +49,39 @@ public:
     typedef typename extends::file_t file_t;
 
     /// constructor / destructor
-    maint(): default_run_(0) {
+    main_optt(): run_(0) {
     }
-    virtual ~maint() {
+    virtual ~main_optt() {
     }
 private:
-    maint(const maint& copy) {
-        throw xos::exception(exception_unexpected);
+    main_optt(const main_optt& copy) {
+        throw exception(exception_unexpected);
     }
 
 protected:
+    typedef typename extends::in_reader_t in_reader_t;
+    typedef typename extends::out_writer_t out_writer_t;
+    typedef typename extends::err_writer_t err_writer_t;
+
     /// ...run
-    int (derives::*default_run_)(int argc, char_t** argv, char_t** env);
-    virtual int default_run(int argc, char_t** argv, char_t** env) {
+    int (derives::*run_)(int argc, char_t** argv, char_t** env);
+    virtual int run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if ((default_run_)) {
-            err = (this->*default_run_)(argc, argv, env);
+        if ((run_)) {
+            err = (this->*run_)(argc, argv, env);
         } else {
-            if (!(err = this->all_version_run(argc, argv, env))) {
-                err = this->all_usage(argc, argv, env);
-            }
+            err = extends::run(argc, argv, env);
         }
         return err;
     }
 
 protected:
-}; /// class maint
-typedef maint<> main;
+}; /// class main_optt
+typedef main_optt<> main_opt;
 
-} /// namespace talas
+} /// namespace bn
 } /// namespace console
 } /// namespace app
 } /// namespace xos
 
-#endif /// ndef XOS_APP_CONSOLE_TALAS_MAIN_HPP 
+#endif /// ndef XOS_APP_CONSOLE_BN_MAIN_OPT_HPP
