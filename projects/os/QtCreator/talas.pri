@@ -1,5 +1,5 @@
 ########################################################################
-# Copyright (c) 1988-2021 $organization$
+# Copyright (c) 1988-2022 $organization$
 #
 # This software is provided by the author and contributors ``as is''
 # and any express or implied warranties, including, but not limited to,
@@ -16,11 +16,11 @@
 #   File: talas.pri
 #
 # Author: $author$
-#   Date: 11/13/2021
+#   Date: 1/4/2022
 #
-# Os specific QtCreator .pri file for talas
+# os specific QtCreator project .pri file for framework talas
 ########################################################################
-# depends rostra;nadir;fila;crono;cifra;rete;stara;libressl;openssl
+# Depends: openssl;libressl;bn;mp;rostra;nadir;fila;crono;cifra;rete;stara;medusade
 
 UNAME = $$system(uname)
 
@@ -61,6 +61,106 @@ contains(TALAS_OS,windows) {
 } # contains(TALAS_OS,macosx)
 
 ########################################################################
+# openssl
+OPENSSL_THIRDPARTY_PKG_MAKE_BLD = $${OPENSSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+OPENSSL_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${OPENSSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+OPENSSL_THIRDPARTY_PKG_BLD = $${OPENSSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+OPENSSL_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${OPENSSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+OPENSSL_PKG_BLD = $${OTHER_BLD}/$${OPENSSL_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+OPENSSL_PRJ_BLD = $${OTHER_BLD}/$${OPENSSL_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PKG_MAKE_BLD}/lib
+#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PRJ_MAKE_BLD}/lib
+#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PKG_BLD}/lib
+#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PRJ_BLD}/lib
+OPENSSL_LIB = $${OPENSSL_PKG_BLD}/lib
+#OPENSSL_LIB = $${OPENSSL_PRJ_BLD}/lib
+#OPENSSL_LIB = $${TALAS_LIB}
+OPENSSL_LIB_NAME = $${OPENSSL_NAME}
+
+# openssl LIBS
+#
+openssl_LIBS += \
+-L$${OPENSSL_LIB}/lib$${OPENSSL_LIB_NAME} \
+-l$${OPENSSL_LIB_NAME} \
+
+
+########################################################################
+# libressl
+LIBRESSL_THIRDPARTY_PKG_MAKE_BLD = $${LIBRESSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+LIBRESSL_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${LIBRESSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+LIBRESSL_THIRDPARTY_PKG_BLD = $${LIBRESSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+LIBRESSL_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${LIBRESSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+LIBRESSL_PKG_BLD = $${OTHER_BLD}/$${LIBRESSL_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+LIBRESSL_PRJ_BLD = $${OTHER_BLD}/$${LIBRESSL_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PKG_MAKE_BLD}/lib
+#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PRJ_MAKE_BLD}/lib
+#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PKG_BLD}/lib
+#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PRJ_BLD}/lib
+LIBRESSL_LIB = $${LIBRESSL_PKG_BLD}/lib
+#LIBRESSL_LIB = $${LIBRESSL_PRJ_BLD}/lib
+#LIBRESSL_LIB = $${TALAS_LIB}
+LIBRESSL_LIB_NAME = $${LIBRESSL_NAME}
+
+# libressl LIBS
+#
+libressl_LIBS += \
+-L$${LIBRESSL_LIB}/lib$${LIBRESSL_LIB_NAME} \
+-l$${LIBRESSL_LIB_NAME} \
+
+
+########################################################################
+# bn
+BN_THIRDPARTY_PKG_MAKE_BLD = $${BN_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+BN_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${BN_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+BN_THIRDPARTY_PKG_BLD = $${BN_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+BN_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${BN_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+BN_PKG_BLD = $${OTHER_BLD}/$${BN_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+BN_PRJ_BLD = $${OTHER_BLD}/$${BN_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+#BN_LIB = $${BN_THIRDPARTY_PKG_MAKE_BLD}/lib
+#BN_LIB = $${BN_THIRDPARTY_PRJ_MAKE_BLD}/lib
+#BN_LIB = $${BN_THIRDPARTY_PKG_BLD}/lib
+#BN_LIB = $${BN_THIRDPARTY_PRJ_BLD}/lib
+#BN_LIB = $${BN_PKG_BLD}/lib
+#BN_LIB = $${BN_PRJ_BLD}/lib
+BN_LIB = $${TALAS_LIB}
+BN_LIB_NAME = $${BN_NAME}
+
+# bn LIBS
+#
+bn_LIBS += \
+-L$${BN_LIB}/lib$${BN_LIB_NAME} \
+-l$${BN_LIB_NAME} \
+
+
+########################################################################
+# mp
+MP_THIRDPARTY_PKG_MAKE_BLD = $${MP_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+MP_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${MP_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+MP_THIRDPARTY_PKG_BLD = $${MP_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MP_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${MP_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MP_PKG_BLD = $${OTHER_BLD}/$${MP_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MP_PRJ_BLD = $${OTHER_BLD}/$${MP_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+#MP_LIB = $${MP_THIRDPARTY_PKG_MAKE_BLD}/lib
+#MP_LIB = $${MP_THIRDPARTY_PRJ_MAKE_BLD}/lib
+#MP_LIB = $${MP_THIRDPARTY_PKG_BLD}/lib
+#MP_LIB = $${MP_THIRDPARTY_PRJ_BLD}/lib
+#MP_LIB = $${MP_PKG_BLD}/lib
+#MP_LIB = $${MP_PRJ_BLD}/lib
+MP_LIB = $${TALAS_LIB}
+MP_LIB_NAME = $${MP_NAME}
+
+# mp LIBS
+#
+mp_LIBS += \
+-L$${MP_LIB}/lib$${MP_LIB_NAME}z \
+-l$${MP_LIB_NAME}z \
+-L$${MP_LIB}/lib$${MP_LIB_NAME}n \
+-l$${MP_LIB_NAME}n \
+-L$${MP_LIB}/lib$${MP_LIB_NAME} \
+-l$${MP_LIB_NAME} \
+
+
+########################################################################
 # rostra
 ROSTRA_THIRDPARTY_PKG_MAKE_BLD = $${ROSTRA_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
 ROSTRA_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${ROSTRA_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
@@ -82,6 +182,7 @@ ROSTRA_LIB_NAME = $${ROSTRA_NAME}
 rostra_LIBS += \
 -L$${ROSTRA_LIB}/lib$${ROSTRA_LIB_NAME} \
 -l$${ROSTRA_LIB_NAME} \
+
 
 ########################################################################
 # nadir
@@ -106,6 +207,7 @@ nadir_LIBS += \
 -L$${NADIR_LIB}/lib$${NADIR_LIB_NAME} \
 -l$${NADIR_LIB_NAME} \
 
+
 ########################################################################
 # fila
 FILA_THIRDPARTY_PKG_MAKE_BLD = $${FILA_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
@@ -128,6 +230,7 @@ FILA_LIB_NAME = $${FILA_NAME}
 fila_LIBS += \
 -L$${FILA_LIB}/lib$${FILA_LIB_NAME} \
 -l$${FILA_LIB_NAME} \
+
 
 ########################################################################
 # crono
@@ -152,6 +255,7 @@ crono_LIBS += \
 -L$${CRONO_LIB}/lib$${CRONO_LIB_NAME} \
 -l$${CRONO_LIB_NAME} \
 
+
 ########################################################################
 # cifra
 CIFRA_THIRDPARTY_PKG_MAKE_BLD = $${CIFRA_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
@@ -175,6 +279,7 @@ cifra_LIBS += \
 -L$${CIFRA_LIB}/lib$${CIFRA_LIB_NAME} \
 -l$${CIFRA_LIB_NAME} \
 
+
 ########################################################################
 # rete
 RETE_THIRDPARTY_PKG_MAKE_BLD = $${RETE_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
@@ -197,6 +302,7 @@ RETE_LIB_NAME = $${RETE_NAME}
 rete_LIBS += \
 -L$${RETE_LIB}/lib$${RETE_LIB_NAME} \
 -l$${RETE_LIB_NAME} \
+
 
 ########################################################################
 # stara
@@ -222,50 +328,27 @@ stara_LIBS += \
 -l$${STARA_LIB_NAME} \
 
 ########################################################################
-# libressl
-LIBRESSL_THIRDPARTY_PKG_MAKE_BLD = $${LIBRESSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
-LIBRESSL_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${LIBRESSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
-LIBRESSL_THIRDPARTY_PKG_BLD = $${LIBRESSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-LIBRESSL_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${LIBRESSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-LIBRESSL_PKG_BLD = $${OTHER_BLD}/$${LIBRESSL_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-LIBRESSL_PRJ_BLD = $${OTHER_BLD}/$${LIBRESSL_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PKG_MAKE_BLD}/lib
-#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PRJ_MAKE_BLD}/lib
-#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PKG_BLD}/lib
-#LIBRESSL_LIB = $${LIBRESSL_THIRDPARTY_PRJ_BLD}/lib
-LIBRESSL_LIB = $${LIBRESSL_PKG_BLD}/lib
-#LIBRESSL_LIB = $${LIBRESSL_PRJ_BLD}/lib
-#LIBRESSL_LIB = $${TALAS_LIB}
-LIBRESSL_LIB_NAME = $${LIBRESSL_NAME}
+# medusade
+MEDUSADE_THIRDPARTY_PKG_MAKE_BLD = $${MEDUSADE_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+MEDUSADE_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${MEDUSADE_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
+MEDUSADE_THIRDPARTY_PKG_BLD = $${MEDUSADE_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MEDUSADE_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${MEDUSADE_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MEDUSADE_PKG_BLD = $${OTHER_BLD}/$${MEDUSADE_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+MEDUSADE_PRJ_BLD = $${OTHER_BLD}/$${MEDUSADE_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
+#MEDUSADE_LIB = $${MEDUSADE_THIRDPARTY_PKG_MAKE_BLD}/lib
+#MEDUSADE_LIB = $${MEDUSADE_THIRDPARTY_PRJ_MAKE_BLD}/lib
+#MEDUSADE_LIB = $${MEDUSADE_THIRDPARTY_PKG_BLD}/lib
+#MEDUSADE_LIB = $${MEDUSADE_THIRDPARTY_PRJ_BLD}/lib
+MEDUSADE_LIB = $${MEDUSADE_PKG_BLD}/lib
+#MEDUSADE_LIB = $${MEDUSADE_PRJ_BLD}/lib
+#MEDUSADE_LIB = $${TALAS_LIB}
+MEDUSADE_LIB_NAME = $${MEDUSADE_NAME}
 
-# libressl LIBS
+# medusade LIBS
 #
-libressl_LIBS += \
--L$${LIBRESSL_LIB}/lib$${LIBRESSL_LIB_NAME} \
--l$${LIBRESSL_LIB_NAME} \
-
-########################################################################
-# openssl
-OPENSSL_THIRDPARTY_PKG_MAKE_BLD = $${OPENSSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
-OPENSSL_THIRDPARTY_PRJ_MAKE_BLD = $${OTHER_BLD}/$${OPENSSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/$${BUILD_CONFIG}
-OPENSSL_THIRDPARTY_PKG_BLD = $${OPENSSL_THIRDPARTY_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-OPENSSL_THIRDPARTY_PRJ_BLD = $${OTHER_BLD}/$${OPENSSL_THIRDPARTY_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-OPENSSL_PKG_BLD = $${OTHER_BLD}/$${OPENSSL_PKG}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-OPENSSL_PRJ_BLD = $${OTHER_BLD}/$${OPENSSL_PRJ}/build/$${TALAS_BUILD}/QtCreator/$${BUILD_CONFIG}
-#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PKG_MAKE_BLD}/lib
-#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PRJ_MAKE_BLD}/lib
-#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PKG_BLD}/lib
-#OPENSSL_LIB = $${OPENSSL_THIRDPARTY_PRJ_BLD}/lib
-OPENSSL_LIB = $${OPENSSL_PKG_BLD}/lib
-#OPENSSL_LIB = $${OPENSSL_PRJ_BLD}/lib
-#OPENSSL_LIB = $${TALAS_LIB}
-OPENSSL_LIB_NAME = $${OPENSSL_NAME}
-
-# openssl LIBS
-#
-openssl_LIBS += \
--L$${OPENSSL_LIB}/lib$${OPENSSL_LIB_NAME} \
--l$${OPENSSL_LIB_NAME} \
+medusade_LIBS += \
+-L$${MEDUSADE_LIB}/lib$${MEDUSADE_LIB_NAME} \
+-l$${MEDUSADE_LIB_NAME} \
 
 ########################################################################
 # talas
@@ -278,7 +361,7 @@ talas_INCLUDEPATH += \
 #
 talas_DEFINES += \
 
-# talas os LIBS
+# talas LIBS
 #
 contains(TALAS_OS,macosx|linux) {
 talas_os_LIBS += \
@@ -293,9 +376,7 @@ talas_os_LIBS += \
 } else {
 } # contains(TALAS_OS,linux)
 
-# talas LIBS
-#
-talas_LIBS += \
+talas_base_LIBS += \
 $${stara_LIBS} \
 $${rete_LIBS} \
 $${cifra_LIBS} \
@@ -304,16 +385,38 @@ $${fila_LIBS} \
 $${nadir_LIBS} \
 $${rostra_LIBS} \
 $${build_talas_LIBS} \
+
+talas_libressl_LIBS += \
+$${talas_LIBS} \
+$${talas_base_LIBS} \
+$${libressl_LIBS} \
 $${talas_os_LIBS} \
 
-# talas libressl LIBS
-#
-talas_libressl_LIBS += \
-$${libressl_LIBS} \
-$${talas_LIBS} \
-
-# talas openssl LIBS
-#
 talas_openssl_LIBS += \
-$${openssl_LIBS} \
 $${talas_LIBS} \
+$${talas_base_LIBS} \
+$${openssl_LIBS} \
+$${talas_os_LIBS} \
+
+talas_mp_LIBS += \
+$${talas_LIBS} \
+$${talas_base_LIBS} \
+$${mp_LIBS} \
+$${talas_os_LIBS} \
+
+talas_bn_LIBS += \
+$${talas_LIBS} \
+$${talas_base_LIBS} \
+$${bn_LIBS} \
+$${talas_os_LIBS} \
+
+talas_rsa_LIBS += \
+$${talas_LIBS} \
+$${talas_base_LIBS} \
+$${mp_LIBS} \
+$${bn_LIBS} \
+$${talas_os_LIBS} \
+
+talas_LIBS += \
+$${talas_base_LIBS} \
+$${talas_os_LIBS} \

@@ -1,5 +1,5 @@
 ########################################################################
-# Copyright (c) 1988-2021 $organization$
+# Copyright (c) 1988-2022 $organization$
 #
 # This software is provided by the author and contributors ``as is''
 # and any express or implied warranties, including, but not limited to,
@@ -16,11 +16,11 @@
 #   File: talas.pri
 #
 # Author: $author$
-#   Date: 11/13/2021
+#   Date: 1/4/2022
 #
-# Build specific QtCreator .pri file for talas
+# build specific QtCreator project .pri file for framework talas
 ########################################################################
-# depends rostra;nadir;fila;crono;cifra;rete;stara;libressl;openssl
+# Depends: openssl;libressl;bn;mp;rostra;nadir;fila;crono;cifra;rete;stara;medusade
 
 contains(BUILD_OS,Uname) {
 UNAME = $$system(uname)
@@ -46,6 +46,94 @@ BUILD_OS = os
 } # contains(BUILD_OS,Uname)
 
 #BUILD_CPP_VERSION = 11
+
+########################################################################
+# openssl
+#
+# pkg-config --cflags --libs openssl
+#
+
+# build openssl INCLUDEPATH
+#
+build_openssl_INCLUDEPATH += \
+
+# build openssl DEFINES
+#
+build_openssl_DEFINES += \
+
+# build openssl FRAMEWORKS
+#
+build_openssl_FRAMEWORKS += \
+
+# build openssl LIBS
+#
+build_openssl_LIBS += \
+
+########################################################################
+# libressl
+#
+# pkg-config --cflags --libs libressl
+#
+
+# build libressl INCLUDEPATH
+#
+build_libressl_INCLUDEPATH += \
+
+# build libressl DEFINES
+#
+build_libressl_DEFINES += \
+
+# build libressl FRAMEWORKS
+#
+build_libressl_FRAMEWORKS += \
+
+# build libressl LIBS
+#
+build_libressl_LIBS += \
+
+########################################################################
+# bn
+#
+# pkg-config --cflags --libs bn
+#
+
+# build bn INCLUDEPATH
+#
+build_bn_INCLUDEPATH += \
+
+# build bn DEFINES
+#
+build_bn_DEFINES += \
+
+# build bn FRAMEWORKS
+#
+build_bn_FRAMEWORKS += \
+
+# build bn LIBS
+#
+build_bn_LIBS += \
+
+########################################################################
+# mp
+#
+# pkg-config --cflags --libs mp
+#
+
+# build mp INCLUDEPATH
+#
+build_mp_INCLUDEPATH += \
+
+# build mp DEFINES
+#
+build_mp_DEFINES += \
+
+# build mp FRAMEWORKS
+#
+build_mp_FRAMEWORKS += \
+
+# build mp LIBS
+#
+build_mp_LIBS += \
 
 ########################################################################
 # rostra
@@ -202,48 +290,26 @@ build_stara_FRAMEWORKS += \
 build_stara_LIBS += \
 
 ########################################################################
-# libressl
+# medusade
 #
-# pkg-config --cflags --libs libressl
-#
-
-# build libressl INCLUDEPATH
-#
-build_libressl_INCLUDEPATH += \
-
-# build libressl DEFINES
-#
-build_libressl_DEFINES += \
-
-# build libressl FRAMEWORKS
-#
-build_libressl_FRAMEWORKS += \
-
-# build libressl LIBS
-#
-build_libressl_LIBS += \
-
-########################################################################
-# openssl
-#
-# pkg-config --cflags --libs openssl
+# pkg-config --cflags --libs medusade
 #
 
-# build openssl INCLUDEPATH
+# build medusade INCLUDEPATH
 #
-build_openssl_INCLUDEPATH += \
+build_medusade_INCLUDEPATH += \
 
-# build openssl DEFINES
+# build medusade DEFINES
 #
-build_openssl_DEFINES += \
+build_medusade_DEFINES += \
 
-# build openssl FRAMEWORKS
+# build medusade FRAMEWORKS
 #
-build_openssl_FRAMEWORKS += \
+build_medusade_FRAMEWORKS += \
 
-# build openssl LIBS
+# build medusade LIBS
 #
-build_openssl_LIBS += \
+build_medusade_LIBS += \
 
 ########################################################################
 # talas
@@ -251,8 +317,6 @@ build_openssl_LIBS += \
 # build talas INCLUDEPATH
 #
 build_talas_INCLUDEPATH += \
-$${build_openssl_INCLUDEPATH} \
-$${build_libressl_INCLUDEPATH} \
 $${build_stara_INCLUDEPATH} \
 $${build_rete_INCLUDEPATH} \
 $${build_cifra_INCLUDEPATH} \
@@ -260,11 +324,19 @@ $${build_crono_INCLUDEPATH} \
 $${build_fila_INCLUDEPATH} \
 $${build_nadir_INCLUDEPATH} \
 $${build_rostra_INCLUDEPATH} \
+$${build_mp_INCLUDEPATH} \
+$${build_bn_INCLUDEPATH} \
+
+_build_talas_INCLUDEPATH += \
+$${build_libressl_INCLUDEPATH} \
+$${build_openssl_INCLUDEPATH} \
 
 
 # build talas DEFINES
 #
 build_talas_DEFINES += \
+$${build_bn_DEFINES} \
+$${build_mp_DEFINES} \
 $${build_rostra_DEFINES} \
 $${build_nadir_DEFINES} \
 $${build_fila_DEFINES} \
@@ -272,8 +344,10 @@ $${build_crono_DEFINES} \
 $${build_cifra_DEFINES} \
 $${build_rete_DEFINES} \
 $${build_stara_DEFINES} \
-$${build_libressl_DEFINES} \
+
+_build_talas_DEFINES += \
 $${build_openssl_DEFINES} \
+$${build_libressl_DEFINES} \
 
 
 # build talas FRAMEWORKS
@@ -286,16 +360,13 @@ $${build_crono_FRAMEWORKS} \
 $${build_fila_FRAMEWORKS} \
 $${build_nadir_FRAMEWORKS} \
 $${build_rostra_FRAMEWORKS} \
+$${build_mp_FRAMEWORKS} \
+$${build_bn_FRAMEWORKS} \
 
-# build talas libressl FRAMEWORKS
-#
-build_talas_libressl_FRAMEWORKS += \
+_build_talas_FRAMEWORKS += \
 $${build_libressl_FRAMEWORKS} \
-
-# build talas openssl FRAMEWORKS
-#
-build_talas_openssl_FRAMEWORKS += \
 $${build_openssl_FRAMEWORKS} \
+
 
 # build talas LIBS
 #
@@ -307,14 +378,11 @@ $${build_crono_LIBS} \
 $${build_fila_LIBS} \
 $${build_nadir_LIBS} \
 $${build_rostra_LIBS} \
+$${build_mp_LIBS} \
+$${build_bn_LIBS} \
 
-# build talas libressl LIBS
-#
-build_talas_libressl_LIBS += \
+_build_talas_LIBS += \
 $${build_libressl_LIBS} \
-
-# build talas openssl LIBS
-#
-build_talas_openssl_LIBS += \
 $${build_openssl_LIBS} \
 
+########################################################################
