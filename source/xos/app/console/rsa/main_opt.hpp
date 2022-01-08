@@ -52,11 +52,11 @@
     XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPT "bn-integer"
-#define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTARG ""
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTUSE "use bn integer library"
-#define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_S "b::"
+#define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_S "b"
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_C 'b'
 #define XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTION \
    {XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPT, \
@@ -65,11 +65,11 @@
     XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPT "gmp-integer"
-#define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG ""
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTUSE "use gmp integer library"
-#define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_S "g::"
+#define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_S "g"
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_C 'g'
 #define XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTION \
    {XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPT, \
@@ -77,17 +77,32 @@
     XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_C}, \
 
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPT "file-input"
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG ""
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTUSE "input from file"
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_S "f"
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C 'f'
+#define XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTION \
+   {XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPT, \
+    XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C}, \
+
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_S \
+   XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTION \
+   XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTION \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_CHARS_EXTEND \
@@ -514,7 +529,7 @@ protected:
         byte_t *bytes = 0;
         
         if ((bytes = array.elements(length))) {
-            this->outxln(bytes, length);
+            this->output_x(bytes, length, argc, argv, env);
         }
         return err;
     }
@@ -538,6 +553,37 @@ protected:
         return err;
     }
 
+    /// ...output_x
+    int (derives::*output_x_)(const void* out, size_t len, int argc, char_t** argv, char_t** env);
+    virtual int output_x(const void* out, size_t len, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_x_) {
+            err = (this->*output_x_)(out, len, argc, argv, env);
+        } else {
+            err = default_output_x(out, len, argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_output_x(const void* out, size_t len, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        const byte_t *bytes = 0;
+
+        if ((bytes = ((const byte_t*)out)) && (len)) {
+            size_t cols = 32, col = 0;
+            char_t nextln = '\\';
+
+            for (col = 0; len; --len, ++bytes, ++col) {
+                if (cols <= (col)) {
+                    this->outln(&nextln, 1);
+                    col = 0;
+                }
+                this->outx(bytes, 1);
+            }
+            this->outln();
+        }
+        return err;
+    }
+
     /// ...on_set_literal
     int (derives::*on_set_literal_)(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
     virtual int on_set_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
@@ -555,6 +601,16 @@ protected:
     }
     virtual int on_set_hex_file_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
+        return err;
+    }
+    virtual int set_on_set_hex_string_literal(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        on_set_literal_ = &derives::on_set_hex_string_literal;
+        return err;
+    }
+    virtual int set_on_set_hex_file_literal(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        on_set_literal_ = &derives::on_set_hex_file_literal;
         return err;
     }
 
@@ -633,6 +689,21 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTARG;
         return chars;
     }
+    virtual int on_file_input_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+        }
+        err = set_on_set_hex_file_literal(argc, argv, env);
+        return err;
+    }
+    virtual const char_t* file_input_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTARG;
+        return chars;
+    }
     virtual int on_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
@@ -649,6 +720,9 @@ protected:
             break;
         case XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_C:
             err = this->on_gmp_integer_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C:
+            err = this->on_file_input_option(optval, optarg, optname, optind, argc, argv, env);
             break;
         default:
             err = extends::on_option(optval, optarg, optname, optind, argc, argv, env);
@@ -669,6 +743,9 @@ protected:
             break;
         case XOS_APP_CONSOLE_RSA_MAIN_GMP_INTEGER_OPTVAL_C:
             chars = gmp_integer_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C:
+            chars = file_input_option_usage(optarg, longopt);
             break;
         default:
             chars = extends::option_usage(optarg, longopt);

@@ -23,6 +23,7 @@
 
 #include "talas/io/hex/reader.hpp"
 #include "talas/base/array.hpp"
+#include "talas/io/logger.hpp"
 
 namespace talas {
 namespace io {
@@ -62,6 +63,9 @@ public:
     virtual ssize_t on_begin(what_t* what, size_t size) {
         array_.set_length(0);
         byte_ = nibble_ = 0;
+        return size;
+    }
+    virtual ssize_t on_end(what_t* what, size_t size) {
         return size;
     }
     virtual ssize_t on_hex_digit(unsigned d, what_t* what, size_t size) {

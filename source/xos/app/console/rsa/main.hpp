@@ -38,6 +38,7 @@
 #include "talas/io/hex/read_to_array.hpp"
 #include "talas/io/hex/reader.hpp"
 #include "talas/io/string/reader.hpp"
+#include "talas/io/read/file.hpp"
 
 namespace xos {
 namespace app {
@@ -98,9 +99,9 @@ protected:
     }
     virtual int output_test_exponent_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        this->outxln
+        this->output_x
         (::talas::app::console::rsa::rsa_public_exponent, 
-         sizeof(::talas::app::console::rsa::rsa_public_exponent));
+         sizeof(::talas::app::console::rsa::rsa_public_exponent), argc, argv, env);
         return err;
     }
     /// ...output_..._modulus_run
@@ -111,9 +112,50 @@ protected:
     }
     virtual int output_test_modulus_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        this->outxln
+        this->output_x
         (::talas::app::console::rsa::rsa_public_modulus, 
-         sizeof(::talas::app::console::rsa::rsa_public_modulus));
+         sizeof(::talas::app::console::rsa::rsa_public_modulus), argc, argv, env);
+        return err;
+    }
+
+    /// ...bn_literal_run
+    virtual int bn_literal_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t modulus_length = 0, exponent_length = 0;
+        const byte_t *modulus = 0, *exponent = 0;
+
+        if ((modulus = get_modulus(modulus_length)) && (modulus_length) 
+            && (exponent = get_exponent(exponent_length)) && (exponent_length)) {
+            size_t p_length = 0;
+            const byte_t *p = 0, *q = 0, *dmp1 = 0, *dmq1 = 0, *iqmp = 0;
+            
+            ::talas::crypto::rsa::bn::public_key pub(modulus, modulus_length,exponent, exponent_length);
+            if ((p = get_p(q, dmp1, dmq1, iqmp, p_length)) && (p_length)) {
+
+                ::talas::crypto::rsa::bn::private_key prv(p, q, dmp1, dmq1, iqmp, p_length);
+                err = run_test(pub, prv, argc, argv, env);
+            }
+        }
+        return err;
+    }
+    /// ...gmp_literal_run
+    virtual int gmp_literal_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t modulus_length = 0, exponent_length = 0;
+        const byte_t *modulus = 0, *exponent = 0;
+
+        if ((modulus = get_modulus(modulus_length)) && (modulus_length) 
+            && (exponent = get_exponent(exponent_length)) && (exponent_length)) {
+            size_t p_length = 0;
+            const byte_t *p = 0, *q = 0, *dmp1 = 0, *dmq1 = 0, *iqmp = 0;
+            
+            ::talas::crypto::rsa::mp::public_key pub(modulus, modulus_length,exponent, exponent_length);
+            if ((p = get_p(q, dmp1, dmq1, iqmp, p_length)) && (p_length)) {
+
+                ::talas::crypto::rsa::mp::private_key prv(p, q, dmp1, dmq1, iqmp, p_length);
+                err = run_test(pub, prv, argc, argv, env);
+            }
+        }
         return err;
     }
 
@@ -130,7 +172,7 @@ protected:
          ::talas::app::console::rsa::rsa_private_dmp1, ::talas::app::console::rsa::rsa_private_dmq1, 
          ::talas::app::console::rsa::rsa_private_iqmp, sizeof(::talas::app::console::rsa::rsa_private_p));
         
-        err = test(pub, prv);
+        err = run_test(pub, prv, argc, argv, env);
         return err;
     }
     /// ...gmp_test_run
@@ -146,13 +188,13 @@ protected:
          ::talas::app::console::rsa::rsa_private_dmp1, ::talas::app::console::rsa::rsa_private_dmq1, 
          ::talas::app::console::rsa::rsa_private_iqmp, sizeof(::talas::app::console::rsa::rsa_private_p));
         
-        err = test(pub, prv);
+        err = run_test(pub, prv, argc, argv, env);
         return err;
     }
 
     /// test
     template <typename rsa_public_key_t, typename rsa_private_key_t>
-    int test(rsa_public_key_t& pub, rsa_private_key_t& prv) {
+    int run_test(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
         int err = 0;
         ssize_t size = 0, modbytes = pub.modbytes();
 
@@ -280,8 +322,29 @@ protected:
             ::talas::io::hex::read_to_byte_array to_array(array);
             ::talas::io::hex::reader hex(to_array, reader);
 
-            if (0 < (count = hex.read())) {
-            } else {
+            if (0 >= (count = hex.read())) {
+                array.set_length(0);
+            }
+        }
+        return err;
+    }
+    virtual int on_set_hex_file_literal
+    (::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        const char_t* chars = 0;
+
+        if ((chars = literal.has_chars(length))) {
+            ::talas::io::read::char_file file;
+
+            if ((file.open(chars))) {
+                ssize_t count = 0;
+                ::talas::io::hex::read_to_byte_array to_array(array);
+                ::talas::io::hex::reader hex(to_array, file);
+    
+                if (0 >= (count = hex.read())) {
+                    array.set_length(0);
+                }
             }
         }
         return err;
@@ -300,11 +363,20 @@ protected:
     }
     virtual const byte_t* get_test_exponent(size_t &length) {
         const byte_t* bytes = 0;
+        length = sizeof(::talas::app::console::rsa::rsa_public_exponent);
+        bytes = ::talas::app::console::rsa::rsa_public_exponent;
         return bytes;
     }
     virtual const byte_t* get_literal_exponent(size_t &length) {
         const byte_t* bytes = 0;
+        length = exponent_.length();
+        bytes = exponent_.elements();
         return bytes;
+    }
+    virtual int set_get_test_exponent(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        get_exponent_ = &derives::get_literal_exponent;
+        return err;
     }
     virtual int set_get_literal_exponent(int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -325,15 +397,68 @@ protected:
     }
     virtual const byte_t* get_test_modulus(size_t &length) {
         const byte_t* bytes = 0;
+        length = sizeof(::talas::app::console::rsa::rsa_public_modulus);
+        bytes = ::talas::app::console::rsa::rsa_public_modulus;
         return bytes;
     }
     virtual const byte_t* get_literal_modulus(size_t &length) {
         const byte_t* bytes = 0;
-        return bytes;
+        length = modulus_.length();
+        bytes = modulus_.elements();
+        return bytes;;
+    }
+    virtual int set_get_test_modulus(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        get_modulus_ = &derives::get_test_modulus;
+        return err;
     }
     virtual int set_get_literal_modulus(int argc, char_t** argv, char_t** env) {
         int err = 0;
         get_modulus_ = &derives::get_literal_modulus;
+        return err;
+    }
+
+    /// ...get_p
+    const byte_t* (derives::*get_p_)
+    (const byte_t *&q, const byte_t *&dmp1, 
+     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length);
+    virtual const byte_t* get_p
+    (const byte_t *&q, const byte_t *&dmp1, 
+     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
+        const byte_t* bytes = 0;
+        if (get_p_) {
+            bytes = (this->*get_p_)(q, dmp1, dmq1, iqmp, length);
+        } else {
+            bytes = get_test_p(q, dmp1, dmq1, iqmp, length);
+        }
+        return bytes;
+    }
+    virtual const byte_t* get_test_p
+    (const byte_t *&q, const byte_t *&dmp1, 
+     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
+        const byte_t* bytes = 0;
+        length = sizeof(::talas::app::console::rsa::rsa_private_p);
+        bytes = ::talas::app::console::rsa::rsa_private_p;
+        q = ::talas::app::console::rsa::rsa_private_q;
+        dmp1 = ::talas::app::console::rsa::rsa_private_dmp1;
+        dmq1 = ::talas::app::console::rsa::rsa_private_dmq1;
+        iqmp = ::talas::app::console::rsa::rsa_private_iqmp;
+        return bytes;
+    }
+    virtual const byte_t* get_literal_p
+    (const byte_t *&q, const byte_t *&dmp1, 
+     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
+        const byte_t* bytes = 0;
+        return bytes;;
+    }
+    virtual int set_get_test_p(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        get_p_ = &derives::get_test_p;
+        return err;
+    }
+    virtual int set_get_literal_p(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        get_p_ = &derives::get_literal_p;
         return err;
     }
 

@@ -22,6 +22,7 @@
 #define TALAS_IO_HEX_READER_HPP
 
 #include "talas/io/delegated/reader.hpp"
+#include "talas/io/logger.hpp"
 
 namespace talas {
 namespace io {
@@ -166,24 +167,34 @@ public:
         char c = 0;
         if ((sized = ((sized_t*)what))) {
             if (is_hex_char(c = ((char)(*sized)))) {
-                on_read_ = &Derives::on_read_hex;
+                TALAS_LOG_DEBUG("this->on_begin(what = " << char_to_string(c) << ")...");
+                this->on_begin(what, size);
                 this->on_hex_char(what, size);
+                on_read_ = &Derives::on_read_hex;
             } else {
-                if (!is_ws_char(c)) {
-                    on_read_ = &Derives::on_read_end;
+                if ((!is_nextln_char(c)) && (!is_ws_char(c))) {
+                    TALAS_LOG_DEBUG("this->on_end(what = " << char_to_string(c) << ")...");
+                    this->on_end(what, size);
+                    on_read_ = &Derives::on_read_begin;
                 }
             }
         }
         return count;
     }
-    virtual ssize_t on_read_end(what_t* what, size_t size) {
+    virtual ssize_t on_read_nextln(what_t* what, size_t size) {
         ssize_t count = size;
         sized_t* sized = 0;
         char c = 0;
         if ((sized = ((sized_t*)what))) {
-            switch (c = ((char)(*sized))) {
-            default:
-                break;
+            if (is_hex_char(c = ((char)(*sized)))) {
+                this->on_hex_char(what, size);
+                on_read_ = &Derives::on_read_hex;
+            } else {
+                if ((!is_nextln_char(c)) && (!is_ws_char(c))) {
+                    TALAS_LOG_DEBUG("this->on_end(what = " << char_to_string(c) << ")...");
+                    this->on_end(what, size);
+                    on_read_ = &Derives::on_read_begin;
+                }
             }
         }
         return count;
@@ -196,8 +207,12 @@ public:
             if (is_hex_char(c = ((char)(*sized)))) {
                 this->on_hex_char(what, size);
             } else {
-                if (!is_ws_char(c)) {
-                    on_read_ = &Derives::on_read_end;
+                if ((!is_nextln_char(c))) {
+                    TALAS_LOG_DEBUG("this->on_end(what = " << char_to_string(c) << ")...");
+                    this->on_end(what, size);
+                    on_read_ = &Derives::on_read_begin;
+                } else {
+                    on_read_ = &Derives::on_read_nextln;
                 }
             }
         }
@@ -225,6 +240,13 @@ public:
         if (((c >= '0') && (c <= '9'))
             || ((c >= 'a') && (c <= 'f'))
             || ((c >= 'A') && (c <= 'F'))) {
+            return true;
+        }
+        return false;
+    }
+    inline bool is_nextln_char(char c) const {
+        switch (c) {
+        case '\\':
             return true;
         }
         return false;
