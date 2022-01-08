@@ -55,12 +55,20 @@ XOS_CONSOLE_MAIN_MAIN \
 # rsa HEADERS
 #
 rsa_HEADERS += \
+$${TALAS_SRC}/talas/io/read/file.hpp \
+$${TALAS_SRC}/talas/io/hex/reader.hpp \
+$${TALAS_SRC}/talas/io/hex/read_to_array.hpp \
+\
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.hpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.hpp \
 
 # rsa SOURCES
 #
 rsa_SOURCES += \
+$${TALAS_SRC}/talas/io/read/file.cpp \
+$${TALAS_SRC}/talas/io/hex/reader.cpp \
+$${TALAS_SRC}/talas/io/hex/read_to_array.cpp \
+\
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.cpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.cpp \
 
