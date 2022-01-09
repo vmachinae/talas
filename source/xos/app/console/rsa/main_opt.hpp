@@ -25,6 +25,45 @@
 #include "talas/base/array.hpp"
 #include "talas/base/string.hpp"
 
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPT "keys"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG "[string]"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTUSE "RSA key pair"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_S "k::"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C 'k'
+#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTION \
+   {XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPT, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C}, \
+
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPT "private-key"
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG "[string]"
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTUSE "RSA private key"
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_S "r::"
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C 'r'
+#define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTION \
+   {XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPT, \
+    XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C}, \
+
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPT "public-key"
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG "[string]"
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTUSE "RSA public key"
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_S "p::"
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_C 'p'
+#define XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTION \
+   {XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPT, \
+    XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_C}, \
+
 #define XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPT "modulus"
 #define XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTARG_RESULT 0
@@ -91,6 +130,9 @@
     XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_CHARS_EXTEND \
+   XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_S \
+   XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_S \
+   XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTVAL_S \
@@ -98,6 +140,9 @@
    XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_OPTIONS_EXTEND \
+   XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTION \
+   XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTION \
+   XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTION \   
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_BN_INTEGER_OPTION \
@@ -201,6 +246,7 @@ protected:
         run_ = &derives::all_output_exponent_run;
         return err;
     }
+
     /// ...output_modulus_run
     int (derives::*output_modulus_run_)(int argc, char_t** argv, char_t** env);
     virtual int output_modulus_run(int argc, char_t** argv, char_t** env) {
@@ -237,6 +283,204 @@ protected:
         return err;
     }
 
+    /// ...output_public_key_run
+    int (derives::*output_public_key_run_)(int argc, char_t** argv, char_t** env);
+    virtual int output_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_public_key_run_) {
+            err = (this->*output_public_key_run_)(argc, argv, env);
+        } else {
+            err = output_test_public_key_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int before_output_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_public_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_public_key_run(argc, argv, env);
+            if ((err2 = after_output_public_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_output_public_key_run;
+        return err;
+    }
+
+    /// ...output_private_key_run
+    int (derives::*output_private_key_run_)(int argc, char_t** argv, char_t** env);
+    virtual int output_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_private_key_run_) {
+            err = (this->*output_private_key_run_)(argc, argv, env);
+        } else {
+            err = output_test_private_key_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int before_output_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_private_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_private_key_run(argc, argv, env);
+            if ((err2 = after_output_private_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_output_private_key_run;
+        return err;
+    }
+
+    /// ...output_keys_run
+    int (derives::*output_keys_run_)(int argc, char_t** argv, char_t** env);
+    virtual int output_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_keys_run_) {
+            err = (this->*output_keys_run_)(argc, argv, env);
+        } else {
+            err = output_test_keys_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int before_output_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_keys_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_keys_run(argc, argv, env);
+            if ((err2 = after_output_keys_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_output_keys_run;
+        return err;
+    }
+
+    /// ...output_get_public_key_run
+    virtual int output_get_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_get_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_get_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_get_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_get_public_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_get_public_key_run(argc, argv, env);
+            if ((err2 = after_output_get_public_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_get_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_public_key_run_ = &derives::all_output_get_public_key_run;
+        return err;
+    }
+
+    /// ...output_get_private_key_run
+    virtual int output_get_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_get_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_get_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_get_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_get_private_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_get_private_key_run(argc, argv, env);
+            if ((err2 = after_output_get_private_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_get_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_private_key_run_ = &derives::all_output_get_private_key_run;
+        return err;
+    }
+
+    /// ...output_get_keys_run
+    virtual int output_get_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_get_keys_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_get_keys_run(argc, argv, env);
+            if ((err2 = after_output_get_keys_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_keys_run_ = &derives::all_output_get_keys_run;
+        return err;
+    }
+
     /// ...output_literal_exponent_run
     virtual int output_literal_exponent_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -261,12 +505,12 @@ protected:
         }
         return err;
     }
-    /// ...set_output_literal_exponent_run
     virtual int set_output_literal_exponent_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         output_exponent_run_ = &derives::all_output_literal_exponent_run;
         return err;
     }
+
     /// ...output_literal_modulus_run
     virtual int output_literal_modulus_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -291,10 +535,99 @@ protected:
         }
         return err;
     }
-    /// ...set_output_literal_modulus_run
     virtual int set_output_literal_modulus_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         output_modulus_run_ = &derives::all_output_literal_modulus_run;
+        return err;
+    }
+
+    /// ...output_literal_public_key_run
+    virtual int output_literal_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_literal_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_literal_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_literal_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_literal_public_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_literal_public_key_run(argc, argv, env);
+            if ((err2 = after_output_literal_public_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_literal_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_public_key_run_ = &derives::all_output_literal_public_key_run;
+        return err;
+    }
+
+    /// ...output_literal_private_key_run
+    virtual int output_literal_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_literal_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_literal_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_literal_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_literal_private_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_literal_private_key_run(argc, argv, env);
+            if ((err2 = after_output_literal_private_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_literal_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_private_key_run_ = &derives::all_output_literal_private_key_run;
+        return err;
+    }
+
+    /// ...output_literal_keys_run
+    virtual int output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_literal_keys_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_literal_keys_run(argc, argv, env);
+            if ((err2 = after_output_literal_keys_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        output_keys_run_ = &derives::all_output_literal_private_key_run;
         return err;
     }
 
@@ -322,6 +655,7 @@ protected:
         }
         return err;
     }
+
     /// ...output_test_modulus_run
     virtual int output_test_modulus_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -341,6 +675,84 @@ protected:
             int err2 = 0;
             err = output_test_modulus_run(argc, argv, env);
             if ((err2 = after_output_test_modulus_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...output_test_public_key_run
+    virtual int output_test_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_test_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_test_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_test_public_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_test_public_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_test_public_key_run(argc, argv, env);
+            if ((err2 = after_output_test_public_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...output_test_private_key_run
+    virtual int output_test_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_test_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_test_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_test_private_key_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_test_private_key_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_test_private_key_run(argc, argv, env);
+            if ((err2 = after_output_test_private_key_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...output_test_keys_run
+    virtual int output_test_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = all_output_test_public_key_run(argc, argv, env))) {
+            err = all_output_test_private_key_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int before_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_test_keys_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_test_keys_run(argc, argv, env);
+            if ((err2 = after_output_test_keys_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -552,6 +964,87 @@ protected:
         }
         return err;
     }
+    virtual int output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        byte_t *bytes = 0;
+        
+        if ((bytes = a1.elements(length))) {
+            this->output_x(bytes, length, argc, argv, env);
+            if ((bytes = a2.elements(length))) {
+                this->output_x(bytes, length, argc, argv, env);
+            }
+        }
+        return err;
+    }
+    virtual int before_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_hex_run(a1, a2, argc, argv, env))) {
+            int err2 = 0;
+            err = output_hex_run(a1, a2, argc, argv, env);
+            if ((err2 = after_output_hex_run(a1, a2, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int output_hex_run
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
+     ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        byte_t *bytes = 0;
+        if ((bytes = a1.elements(length))) {
+            this->output_x(bytes, length, argc, argv, env);
+            if ((bytes = a2.elements(length))) {
+                this->output_x(bytes, length, argc, argv, env);
+                if ((bytes = a3.elements(length))) {
+                    this->output_x(bytes, length, argc, argv, env);
+                    if ((bytes = a4.elements(length))) {
+                        this->output_x(bytes, length, argc, argv, env);
+                        if ((bytes = a5.elements(length))) {
+                            this->output_x(bytes, length, argc, argv, env);
+                        }
+                    }
+                }
+            }
+        }
+        return err;
+    }
+    virtual int before_output_hex_run
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
+     ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_hex_run
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
+     ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_hex_run(a1, a2, a3, a4, a5, argc, argv, env))) {
+            int err2 = 0;
+            err = output_hex_run(a1, a2, a3, a4, a5, argc, argv, env);
+            if ((err2 = after_output_hex_run(a1, a2, a3, a4, a5, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
 
     /// ...output_x
     int (derives::*output_x_)(const void* out, size_t len, int argc, char_t** argv, char_t** env);
@@ -614,7 +1107,103 @@ protected:
         return err;
     }
 
+    /// ...on_set_literals
+    int (derives::*on_set_literals_)(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
+    virtual int on_set_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (on_set_literals_) {
+            err = (this->*on_set_literals_)(array, literal, argc, argv, env);
+        } else {
+            err = on_set_hex_string_literals(array, literal, argc, argv, env);
+        }
+        return err;
+    }
+    virtual int on_set_hex_string_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_set_hex_file_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int set_on_set_hex_string_literals(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        on_set_literals_ = &derives::on_set_hex_string_literals;
+        return err;
+    }
+    virtual int set_on_set_hex_file_literals(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        on_set_literals_ = &derives::on_set_hex_file_literals;
+        return err;
+    }
+
     /// ...option...
+    virtual int on_set_keys_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_keys_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_keys_option(optarg, optind, argc, argv, env))) {
+                err = set_output_literal_keys_run(argc, argv, env);
+            }
+        } else {
+            err = set_output_keys_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* keys_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG;
+        return chars;
+    }
+    virtual int on_set_private_key_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_private_key_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_private_key_option(optarg, optind, argc, argv, env))) {
+                err = set_output_literal_private_key_run(argc, argv, env);
+            }
+        } else {
+            err = set_output_private_key_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* private_key_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG;
+        return chars;
+    }
+    virtual int on_set_public_key_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_public_key_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_public_key_option(optarg, optind, argc, argv, env))) {
+                err = set_output_literal_public_key_run(argc, argv, env);
+            }
+        } else {
+            err = set_output_public_key_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* key_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTARG;
+        return chars;
+    }
     virtual int on_set_modulus_option(const char_t* modulus, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
@@ -647,7 +1236,12 @@ protected:
         int err = 0;
         if ((optarg) && (optarg[0])) {
             if (!(err = on_set_exponent_option(optarg, optind, argc, argv, env))) {
-                err = set_output_literal_exponent_run(argc, argv, env);
+                if (!(err = set_output_literal_exponent_run(argc, argv, env))) {
+                    if (!(err = set_output_get_public_key_run(argc, argv, env))) {
+                        if (!(err = set_output_get_keys_run(argc, argv, env))) {
+                        }
+                    }
+                }
             }
         } else {
             err = set_output_exponent_run(argc, argv, env);
@@ -709,6 +1303,15 @@ protected:
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         switch(optval) {
+        case XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C:
+            err = this->on_keys_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C:
+            err = this->on_private_key_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_C:
+            err = this->on_public_key_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
         case XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTVAL_C:
             err = this->on_modulus_option(optval, optarg, optname, optind, argc, argv, env);
             break;
@@ -732,6 +1335,15 @@ protected:
     virtual const char_t* option_usage(const char_t*& optarg, const struct option* longopt) {
         const char_t* chars = "";
         switch(longopt->val) {
+        case XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C:
+            chars = keys_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C:
+            chars = private_key_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_C:
+            chars = key_option_usage(optarg, longopt);
+            break;
         case XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTVAL_C:
             chars = modulus_option_usage(optarg, longopt);
             break;

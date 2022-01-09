@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-/// Copyright (c) 1988-2016 $organization$
+/// Copyright (c) 1988-2022 $organization$
 ///
 /// This software is provided by the author and contributors ``as is'' 
 /// and any express or implied warranties, including, but not limited to, 
@@ -13,37 +13,24 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: array.hpp
+///   File: read_to_arrays.cpp
 ///
 /// Author: $author$
-///   Date: 1/1/2016, 1/9/2022
+///   Date: 1/9/2022
 ///////////////////////////////////////////////////////////////////////
-#ifndef _TALAS_BASE_ARRAY_HPP
-#define _TALAS_BASE_ARRAY_HPP
-
-#include "xos/base/array.hpp"
-
-#define TALAS_ARRAY_DEFAULT_SIZE XOS_ARRAY_DEFAULT_SIZE
+#include "talas/io/hex/read_to_arrays.hpp"
 
 namespace talas {
+namespace io {
+namespace hex {
 
-typedef xos::base::implement_base array_implements;
-typedef xos::base::base array_extends;
+///////////////////////////////////////////////////////////////////////
+/// class read_to_arrayst
+///////////////////////////////////////////////////////////////////////
+#if defined(TALAS_IO_HEX_READ_TO_ARRAYS_INSTANCE)
+static read_to_arrays the_read_to_arrays;
+#endif /// defined(TALAS_IO_HEX_READ_TO_ARRAYS_INSTANCE) 
 
-typedef xos::base::char_array char_array_t;
-typedef xos::base::tchar_array tchar_array_t;
-typedef xos::base::wchar_array wchar_array_t;
-
-typedef xos::base::byte_array byte_array_t;
-typedef xos::base::word_array word_array_t;
-
-typedef xos::base::arrayt<char_array_t*> char_arrays_t;
-typedef xos::base::arrayt<tchar_array_t*> tchar_arrays_t;
-typedef xos::base::arrayt<wchar_array_t*> wchar_arrays_t;
-
-typedef xos::base::arrayt<byte_array_t*> byte_arrays_t;
-typedef xos::base::arrayt<word_array_t*> word_arrays_t;
-
-} // namespace talas
-
-#endif // _TALAS_BASE_ARRAY_HPP 
+} /// namespace hex 
+} /// namespace io 
+} /// namespace talas 
