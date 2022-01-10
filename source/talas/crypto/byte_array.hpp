@@ -16,7 +16,7 @@
 ///   File: byte_array.hpp
 ///
 /// Author: $author$
-///   Date: 5/13/2015
+///   Date: 5/13/2015, 1/10/2022
 ///////////////////////////////////////////////////////////////////////
 #ifndef _TALAS_CRYPTO_BYTE_ARRAY_HPP
 #define _TALAS_CRYPTO_BYTE_ARRAY_HPP
@@ -65,10 +65,14 @@ public:
     ///////////////////////////////////////////////////////////////////////
     using Extends::assign;
     virtual size_t assign(const byte_array_extends& value) {
-        return this->assign(value.elements(), value.length());
+        size_t count = 0;
+        this->assign(value.elements(), count = value.length());
+        return count;
     }
     virtual size_t assign(const string_t& value) {
-        return this->assign((const byte_t*)value.chars(), value.length());
+        size_t count = 0;
+        this->assign((const byte_t*)value.chars(), count = value.length());
+        return count;
     }
     virtual size_t assign(unsigned_value_t value, size_t size, size_t length) {
         this->set_length(0);
@@ -79,10 +83,14 @@ public:
     ///////////////////////////////////////////////////////////////////////
     using Extends::append;
     virtual size_t append(const byte_array_extends& value) {
-        return this->append(value.elements(), value.length());
+        size_t count = 0;
+        this->append(value.elements(), count = value.length());
+        return count;
     }
     virtual size_t append(const string_t& value) {
-        return this->append((const byte_t*)value.chars(), value.length());
+        size_t count = 0;
+        this->append((const byte_t*)value.chars(), count = value.length());
+        return count;
     }
     virtual size_t append(unsigned_value_t value, size_t size, size_t length) {
         size_t count = 0;
