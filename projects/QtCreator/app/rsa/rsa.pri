@@ -55,24 +55,48 @@ XOS_CONSOLE_MAIN_MAIN \
 # rsa HEADERS
 #
 rsa_HEADERS += \
+$${NADIR_SRC}/xos/base/attached.hpp \
+$${NADIR_SRC}/xos/base/created.hpp \
+\
 $${TALAS_SRC}/talas/io/read/file.hpp \
 $${TALAS_SRC}/talas/io/hex/reader.hpp \
 $${TALAS_SRC}/talas/io/hex/read_to_array.hpp \
 $${TALAS_SRC}/talas/io/hex/read_to_arrays.hpp \
 \
+$${TALAS_SRC}/talas/crypto/random/prime/small_primes.hpp \
+\
+$${TALAS_SRC}/xos/app/console/prime/main_opt.hpp \
+$${TALAS_SRC}/xos/app/console/prime/main.hpp \
+\
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.hpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.hpp \
+\
+$${TALAS_SRC}/xos/app/console/rsa/generate/main_opt.hpp \
+$${TALAS_SRC}/xos/app/console/rsa/generate/main.hpp \
 
 # rsa SOURCES
 #
 rsa_SOURCES += \
+$${NADIR_SRC}/xos/base/attached.cpp \
+$${NADIR_SRC}/xos/base/created.cpp \
+\
 $${TALAS_SRC}/talas/io/read/file.cpp \
 $${TALAS_SRC}/talas/io/hex/reader.cpp \
 $${TALAS_SRC}/talas/io/hex/read_to_array.cpp \
 $${TALAS_SRC}/talas/io/hex/read_to_arrays.cpp \
 \
+$${TALAS_SRC}/talas/crypto/random/prime/small_primes.cpp \
+
+rsa_operate_SOURCES += \
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.cpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.cpp \
+
+rsa_generate_SOURCES += \
+$${TALAS_SRC}/xos/app/console/rsa/generate/main_opt.cpp \
+$${TALAS_SRC}/xos/app/console/rsa/generate/main.cpp \
+
+rsa_SOURCES += $${rsa_operate_SOURCES}
+#rsa_SOURCES += $${rsa_generate_SOURCES}
 
 ########################################################################
 # rsa FRAMEWORKS
