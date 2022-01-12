@@ -176,8 +176,21 @@ protected:
         return err;
     }
 
-    /// ...output_..._keys_run
-    virtual int output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    /// ...output_..._key_pair_run
+    virtual int output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = this->output_hex_run(exponent_, modulus_, p_, q_, dmp1_, dmq1_, iqmp_, argc, argv, env);
+        return err;
+    }
+    virtual int output_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = output_test_public_key_run(argc, argv, env))) {
+            if (!(err = output_test_private_key_run(argc, argv, env))) {
+            }
+        }
+        return err;
+    }
+    virtual int output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t length = 0;
         const byte_t *bytes = 0;
@@ -377,7 +390,7 @@ protected:
     virtual int on_set_exponent_option(const char_t* exponent, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         exponent_string_.assign(exponent);
-        err = this->on_set_literal(exponent_, exponent_string_, argc, argv, env);
+        err = this->on_set_hex_literal(exponent_, exponent_string_, argc, argv, env);
         err = this->set_get_literal_exponent(argc, argv, env);
         err = this->set_literal_run(argc, argv, env);
         return err;
@@ -385,52 +398,54 @@ protected:
     virtual int on_set_modulus_option(const char_t* modulus, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         modulus_string_.assign(modulus);
-        err = this->on_set_literal(modulus_, modulus_string_, argc, argv, env);
+        err = this->on_set_hex_literal(modulus_, modulus_string_, argc, argv, env);
         err = this->set_get_literal_modulus(argc, argv, env);
+        err = this->set_literal_run(argc, argv, env);
+        return err;
+    }
+    virtual int on_set_public_key_option(const char_t* public_key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        public_string_.assign(public_key);
+        err = this->on_set_hex_literals(exponent_, modulus_, public_string_, argc, argv, env);
+        err = this->set_get_literal_exponent(argc, argv, env);
+        err = this->set_get_literal_modulus(argc, argv, env);
+        err = this->set_literal_run(argc, argv, env);
+        return err;
+    }
+    virtual int on_set_private_key_option(const char_t* private_key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        private_string_.assign(private_key);
+        err = this->on_set_hex_literals(p_, q_, dmp1_, dmq1_, iqmp_, private_string_, argc, argv, env);
+        err = this->set_get_literal_p(argc, argv, env);
+        err = this->set_literal_run(argc, argv, env);
+        return err;
+    }
+    virtual int on_set_key_pair_option(const char_t* key_pair, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        pair_string_.assign(key_pair);
+        err = this->on_set_hex_literals(exponent_, modulus_, p_, q_, dmp1_, dmq1_, iqmp_, pair_string_, argc, argv, env);
+        err = this->set_get_literal_exponent(argc, argv, env);
+        err = this->set_get_literal_modulus(argc, argv, env);
+        err = this->set_get_literal_p(argc, argv, env);
         err = this->set_literal_run(argc, argv, env);
         return err;
     }
     virtual int on_set_hex_string_literal
     (::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        size_t length = 0;
-        const char_t* chars = 0;
-
-        if ((chars = literal.has_chars(length))) {
-            ssize_t count = 0;
-            ::talas::io::string::reader reader(literal);
-            ::talas::io::hex::read_to_byte_array to_array(array);
-            ::talas::io::hex::reader hex(to_array, reader);
-
-            if (0 >= (count = hex.read())) {
-                array.set_length(0);
-            }
-        }
+        ::talas::io::hex::read_to_byte_arrays to_arrays(&array, null);
+        err = on_set_hex_string_literals(to_arrays, literal, argc, argv, env);
         return err;
     }
     virtual int on_set_hex_file_literal
     (::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        size_t length = 0;
-        const char_t* chars = 0;
-
-        if ((chars = literal.has_chars(length))) {
-            ::talas::io::read::char_file file;
-
-            if ((file.open(chars))) {
-                ssize_t count = 0;
-                ::talas::io::hex::read_to_byte_array to_array(array);
-                ::talas::io::hex::reader hex(to_array, file);
-    
-                if (0 >= (count = hex.read())) {
-                    array.set_length(0);
-                }
-            }
-        }
+        ::talas::io::hex::read_to_byte_arrays to_arrays(&array, null);
+        err = on_set_hex_file_literals(to_arrays, literal, argc, argv, env);
         return err;
     }
     virtual int on_set_hex_string_literals
-    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+    (::talas::io::hex::read_to_byte_arrays &to_arrays,
      ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t length = 0;
@@ -439,18 +454,16 @@ protected:
         if ((chars = literal.has_chars(length))) {
             ssize_t count = 0;
             ::talas::io::string::reader reader(literal);
-            ::talas::io::hex::read_to_byte_arrays to_arrays(&a1, &a2, null);
             ::talas::io::hex::reader hex(to_arrays, reader);
 
             if (0 >= (count = hex.read())) {
-                a1.set_length(0);
-                a2.set_length(0);
+                err = on_failed_set_hex_literals(to_arrays, literal, argc, argv, env);
             }
         }
         return err;
     }
     virtual int on_set_hex_file_literals
-    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+    (::talas::io::hex::read_to_byte_arrays &to_arrays,
      ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t length = 0;
@@ -459,14 +472,34 @@ protected:
         if ((chars = literal.has_chars(length))) {
             ::talas::io::read::char_file file;
 
+            this->errlln("file.open(\"", chars, "\")...", null);
             if ((file.open(chars))) {
                 ssize_t count = 0;
-                ::talas::io::hex::read_to_byte_arrays to_arrays(&a1, &a2, null);
                 ::talas::io::hex::reader hex(to_arrays, file);
     
                 if (0 >= (count = hex.read())) {
-                    a1.set_length(0);
-                    a2.set_length(0);
+                    err = on_failed_set_hex_literals(to_arrays, literal, argc, argv, env);
+                }
+                this->errlln("...file.close(\"", chars, "\")...", null);
+                file.close();
+            }
+        }
+        return err;
+    }
+    virtual int on_failed_set_hex_literals
+    (::talas::io::hex::read_to_byte_arrays &to_arrays,
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        ::talas::io::hex::read_to_byte_arrays::arrays_t &arrays = to_arrays.arrays();
+        ::talas::io::hex::read_to_byte_arrays::array_pointer_t *array_pointers = 0;
+
+        if ((array_pointers = arrays.elements(length))) {
+            ::talas::io::hex::read_to_byte_arrays::array_pointer_t array_pointer = 0;
+
+            for (array_pointer = *array_pointers; length; --length, ++array_pointers) {
+                if ((array_pointer)) {
+                    array_pointer->set_length(0);
                 }
             }
         }
@@ -572,6 +605,12 @@ protected:
     (const byte_t *&q, const byte_t *&dmp1, 
      const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
         const byte_t* bytes = 0;
+        length = p_.length();
+        bytes = p_.elements();
+        q = q_.elements();
+        dmp1 = dmp1_.elements();
+        dmq1 = dmq1_.elements();
+        iqmp = iqmp_.elements();
         return bytes;;
     }
     virtual int set_get_test_p(int argc, char_t** argv, char_t** env) {
@@ -595,8 +634,11 @@ protected:
            cipher[modbytes_max], 
            decipher[modbytes_max];
 
-    ::talas::byte_array_t exponent_, modulus_, p_, q_, dmp1_, dmq1_, iqmp_;
-    ::talas::string_t exponent_string_, modulus_string_, public_string_, private_string_;
+    ::talas::byte_array_t exponent_, modulus_, 
+                          p_, q_, dmp1_, dmq1_, iqmp_;
+
+    ::talas::string_t exponent_string_, modulus_string_, 
+                      public_string_, private_string_, pair_string_ ;
 }; /// class maint
 typedef maint<> main;
 

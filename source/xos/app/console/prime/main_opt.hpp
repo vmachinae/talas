@@ -439,14 +439,41 @@ protected:
         optarg = XOS_APP_CONSOLE_PRIME_MAIN_GMP_INTEGER_OPTARG;
         return chars;
     }
+    virtual int on_set_integer_bytes
+    (unsigned bytes, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        unsigned bits = (bytes << 3);
+        err = on_set_integer_bits(bits, argc, argv, env);
+        return err;
+    }
+    virtual int on_set_integer_bytes_option
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            string_t arg(optarg);
+            unsigned bytes = arg.to_unsigned();
+            if ((bytes)) {
+                if (!(err = on_set_integer_bytes(bytes, argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
+        } else {
+        }
+        return err;
+    }
     virtual int on_integer_bytes_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_integer_bytes_option(optarg, optind, argc, argv, env))) {
+                err = set_prime_run(argc, argv, env);
+            } else {
+            }
         } else {
+            err = set_prime_run(argc, argv, env);
         }
-        err = set_prime_run(argc, argv, env);
         return err;
     }
     virtual const char_t* integer_bytes_option_usage(const char_t*& optarg, const struct option* longopt) {
@@ -454,14 +481,39 @@ protected:
         optarg = XOS_APP_CONSOLE_PRIME_MAIN_INTEGER_BYTES_OPTARG;
         return chars;
     }
+    virtual int on_set_integer_bits
+    (unsigned bits, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_set_integer_bits_option
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            string_t arg(optarg);
+            unsigned bits = arg.to_unsigned();
+            if ((bits)) {
+                if (!(err = on_set_integer_bits(bits, argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
+        } else {
+        }
+        return err;
+    }
     virtual int on_integer_bits_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_integer_bits_option(optarg, optind, argc, argv, env))) {
+                err = set_prime_run(argc, argv, env);
+            } else {
+            }
         } else {
+            err = set_prime_run(argc, argv, env);
         }
-        err = set_prime_run(argc, argv, env);
         return err;
     }
     virtual const char_t* integer_bits_option_usage(const char_t*& optarg, const struct option* longopt) {

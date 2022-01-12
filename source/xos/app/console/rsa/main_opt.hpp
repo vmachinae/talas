@@ -22,21 +22,24 @@
 #define XOS_APP_CONSOLE_RSA_MAIN_OPT_HPP
 
 #include "xos/app/console/talas/main.hpp"
+#include "talas/io/hex/read_to_arrays.hpp"
+#include "talas/io/hex/read_to_array.hpp"
+#include "talas/io/hex/reader.hpp"
 #include "talas/base/array.hpp"
 #include "talas/base/string.hpp"
 
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPT "keys"
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_RESULT 0
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG "[string]"
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTUSE "RSA key pair"
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_S "k::"
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C 'k'
-#define XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTION \
-   {XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPT, \
-    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_REQUIRED, \
-    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG_RESULT, \
-    XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C}, \
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPT "key-pair"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG "[string]"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTUSE "RSA key pair"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_S "k::"
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_C 'k'
+#define XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTION \
+   {XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPT, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPT "private-key"
 #define XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
@@ -130,7 +133,7 @@
     XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_CHARS_EXTEND \
-   XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_S \
+   XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTVAL_S \
@@ -140,7 +143,7 @@
    XOS_APP_CONSOLE_RSA_MAIN_FILE_INPUT_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_RSA_MAIN_OPTIONS_OPTIONS_EXTEND \
-   XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTION \
+   XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTION \
    XOS_APP_CONSOLE_RSA_MAIN_PUBLIC_KEY_OPTION \   
    XOS_APP_CONSOLE_RSA_MAIN_MODULUS_OPTION \
@@ -355,39 +358,39 @@ protected:
         return err;
     }
 
-    /// ...output_keys_run
-    int (derives::*output_keys_run_)(int argc, char_t** argv, char_t** env);
-    virtual int output_keys_run(int argc, char_t** argv, char_t** env) {
+    /// ...output_key_pair_run
+    int (derives::*output_key_pair_run_)(int argc, char_t** argv, char_t** env);
+    virtual int output_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (output_keys_run_) {
-            err = (this->*output_keys_run_)(argc, argv, env);
+        if (output_key_pair_run_) {
+            err = (this->*output_key_pair_run_)(argc, argv, env);
         } else {
-            err = output_test_keys_run(argc, argv, env);
+            err = output_test_key_pair_run(argc, argv, env);
         }
         return err;
     }
-    virtual int before_output_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_output_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_output_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_output_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_output_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_output_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_output_keys_run(argc, argv, env))) {
+        if (!(err = before_output_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = output_keys_run(argc, argv, env);
-            if ((err2 = after_output_keys_run(argc, argv, env))) {
+            err = output_key_pair_run(argc, argv, env);
+            if ((err2 = after_output_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
-    virtual int set_output_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int set_output_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        run_ = &derives::all_output_keys_run;
+        run_ = &derives::all_output_key_pair_run;
         return err;
     }
 
@@ -451,33 +454,33 @@ protected:
         return err;
     }
 
-    /// ...output_get_keys_run
-    virtual int output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    /// ...output_get_key_pair_run
+    virtual int output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int before_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_output_get_keys_run(argc, argv, env))) {
+        if (!(err = before_output_get_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = output_get_keys_run(argc, argv, env);
-            if ((err2 = after_output_get_keys_run(argc, argv, env))) {
+            err = output_get_key_pair_run(argc, argv, env);
+            if ((err2 = after_output_get_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
-    virtual int set_output_get_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int set_output_get_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        output_keys_run_ = &derives::all_output_get_keys_run;
+        output_key_pair_run_ = &derives::all_output_get_key_pair_run;
         return err;
     }
 
@@ -601,33 +604,33 @@ protected:
         return err;
     }
 
-    /// ...output_literal_keys_run
-    virtual int output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+    /// ...output_literal_key_pair_run
+    virtual int output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int before_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_output_literal_keys_run(argc, argv, env))) {
+        if (!(err = before_output_literal_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = output_literal_keys_run(argc, argv, env);
-            if ((err2 = after_output_literal_keys_run(argc, argv, env))) {
+            err = output_literal_key_pair_run(argc, argv, env);
+            if ((err2 = after_output_literal_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
-    virtual int set_output_literal_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int set_output_literal_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        output_keys_run_ = &derives::all_output_literal_private_key_run;
+        output_key_pair_run_ = &derives::all_output_literal_key_pair_run;
         return err;
     }
 
@@ -731,28 +734,28 @@ protected:
         return err;
     }
 
-    /// ...output_test_keys_run
-    virtual int output_test_keys_run(int argc, char_t** argv, char_t** env) {
+    /// ...output_test_key_pair_run
+    virtual int output_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         if (!(err = all_output_test_public_key_run(argc, argv, env))) {
             err = all_output_test_private_key_run(argc, argv, env);
         }
         return err;
     }
-    virtual int before_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_output_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_output_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_output_test_keys_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_output_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_output_test_keys_run(argc, argv, env))) {
+        if (!(err = before_output_test_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = output_test_keys_run(argc, argv, env);
-            if ((err2 = after_output_test_keys_run(argc, argv, env))) {
+            err = output_test_key_pair_run(argc, argv, env);
+            if ((err2 = after_output_test_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -935,7 +938,8 @@ protected:
     }
 
     /// ...output_hex_run
-    virtual int output_hex_run(::talas::byte_array_t &array, int argc, char_t** argv, char_t** env) {
+    virtual int output_hex_run
+    (::talas::byte_array_t &array, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t length = 0;
         byte_t *bytes = 0;
@@ -945,26 +949,8 @@ protected:
         }
         return err;
     }
-    virtual int before_output_hex_run(::talas::byte_array_t &array, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        return err;
-    }
-    virtual int after_output_hex_run(::talas::byte_array_t &array, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        return err;
-    }
-    virtual int all_output_hex_run(::talas::byte_array_t &array, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (!(err = before_output_hex_run(array, argc, argv, env))) {
-            int err2 = 0;
-            err = output_hex_run(array, argc, argv, env);
-            if ((err2 = after_output_hex_run(array, argc, argv, env))) {
-                if (!(err)) err = err2;
-            }
-        }
-        return err;
-    }
-    virtual int output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
+    virtual int output_hex_run
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t length = 0;
         byte_t *bytes = 0;
@@ -973,25 +959,6 @@ protected:
             this->output_x(bytes, length, argc, argv, env);
             if ((bytes = a2.elements(length))) {
                 this->output_x(bytes, length, argc, argv, env);
-            }
-        }
-        return err;
-    }
-    virtual int before_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        return err;
-    }
-    virtual int after_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        return err;
-    }
-    virtual int all_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (!(err = before_output_hex_run(a1, a2, argc, argv, env))) {
-            int err2 = 0;
-            err = output_hex_run(a1, a2, argc, argv, env);
-            if ((err2 = after_output_hex_run(a1, a2, argc, argv, env))) {
-                if (!(err)) err = err2;
             }
         }
         return err;
@@ -1020,27 +987,33 @@ protected:
         }
         return err;
     }
-    virtual int before_output_hex_run
+    virtual int output_hex_run
     (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
      ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
-     ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
+     ::talas::byte_array_t &a5, ::talas::byte_array_t &a6, ::talas::byte_array_t &a7,
+     int argc, char_t** argv, char_t** env) {
         int err = 0;
-        return err;
-    }
-    virtual int after_output_hex_run
-    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
-     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
-     ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        return err;
-    }
-    virtual int all_output_hex_run(::talas::byte_array_t &a1, ::talas::byte_array_t &a2, ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, ::talas::byte_array_t &a5, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (!(err = before_output_hex_run(a1, a2, a3, a4, a5, argc, argv, env))) {
-            int err2 = 0;
-            err = output_hex_run(a1, a2, a3, a4, a5, argc, argv, env);
-            if ((err2 = after_output_hex_run(a1, a2, a3, a4, a5, argc, argv, env))) {
-                if (!(err)) err = err2;
+        size_t length = 0;
+        byte_t *bytes = 0;
+        if ((bytes = a1.elements(length))) {
+            this->output_x(bytes, length, argc, argv, env);
+            if ((bytes = a2.elements(length))) {
+                this->output_x(bytes, length, argc, argv, env);
+                if ((bytes = a3.elements(length))) {
+                    this->output_x(bytes, length, argc, argv, env);
+                    if ((bytes = a4.elements(length))) {
+                        this->output_x(bytes, length, argc, argv, env);
+                        if ((bytes = a5.elements(length))) {
+                            this->output_x(bytes, length, argc, argv, env);
+                            if ((bytes = a6.elements(length))) {
+                                this->output_x(bytes, length, argc, argv, env);
+                                if ((bytes = a7.elements(length))) {
+                                    this->output_x(bytes, length, argc, argv, env);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return err;
@@ -1077,12 +1050,12 @@ protected:
         return err;
     }
 
-    /// ...on_set_literal
-    int (derives::*on_set_literal_)(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
-    virtual int on_set_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+    /// ...on_set_hex_literal
+    int (derives::*on_set_hex_literal_)(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
+    virtual int on_set_hex_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (on_set_literal_) {
-            err = (this->*on_set_literal_)(array, literal, argc, argv, env);
+        if (on_set_hex_literal_) {
+            err = (this->*on_set_hex_literal_)(array, literal, argc, argv, env);
         } else {
             err = on_set_hex_string_literal(array, literal, argc, argv, env);
         }
@@ -1098,69 +1071,105 @@ protected:
     }
     virtual int set_on_set_hex_string_literal(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        on_set_literal_ = &derives::on_set_hex_string_literal;
+        on_set_hex_literal_ = &derives::on_set_hex_string_literal;
         return err;
     }
     virtual int set_on_set_hex_file_literal(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        on_set_literal_ = &derives::on_set_hex_file_literal;
+        on_set_hex_literal_ = &derives::on_set_hex_file_literal;
         return err;
     }
 
-    /// ...on_set_literals
-    int (derives::*on_set_literals_)(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
-    virtual int on_set_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+    /// ...on_set_hex_literals
+    int (derives::*on_set_hex_literals_)
+    (::talas::io::hex::read_to_byte_arrays &to_arrays, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env);
+    virtual int on_set_hex_literals
+    (::talas::io::hex::read_to_byte_arrays &to_arrays, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (on_set_literals_) {
-            err = (this->*on_set_literals_)(array, literal, argc, argv, env);
+        if (on_set_hex_literals_) {
+            err = (this->*on_set_hex_literals_)(to_arrays, literal, argc, argv, env);
         } else {
-            err = on_set_hex_string_literals(array, literal, argc, argv, env);
+            err = on_set_hex_string_literals(to_arrays, literal, argc, argv, env);
         }
         return err;
     }
-    virtual int on_set_hex_string_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+    virtual int on_set_hex_string_literals
+    (::talas::io::hex::read_to_byte_arrays &to_arrays, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int on_set_hex_file_literals(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+    virtual int on_set_hex_file_literals
+    (::talas::io::hex::read_to_byte_arrays &to_arrays, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
     virtual int set_on_set_hex_string_literals(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        on_set_literals_ = &derives::on_set_hex_string_literals;
+        on_set_hex_literals_ = &derives::on_set_hex_string_literals;
         return err;
     }
     virtual int set_on_set_hex_file_literals(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        on_set_literals_ = &derives::on_set_hex_file_literals;
+        on_set_hex_literals_ = &derives::on_set_hex_file_literals;
+        return err;
+    }
+
+    virtual int on_set_hex_literals
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        ::talas::io::hex::read_to_byte_arrays to_arrays(&a1, &a2, null);
+        err = on_set_hex_literals(to_arrays, literal, argc, argv, env);
+        return err;
+    }
+    virtual int on_set_hex_literals
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, ::talas::byte_array_t &a5, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        ::talas::io::hex::read_to_byte_arrays to_arrays(&a1, &a2, &a3, &a4, &a5, null);
+        err = on_set_hex_literals(to_arrays, literal, argc, argv, env);
+        return err;
+    }
+    virtual int on_set_hex_literals
+    (::talas::byte_array_t &a1, ::talas::byte_array_t &a2, 
+     ::talas::byte_array_t &a3, ::talas::byte_array_t &a4, 
+     ::talas::byte_array_t &a5, ::talas::byte_array_t &a6, ::talas::byte_array_t &a7, 
+     ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        ::talas::io::hex::read_to_byte_arrays to_arrays(&a1, &a2, &a3, &a4, &a5, &a6, &a7, null);
+        err = on_set_hex_literals(to_arrays, literal, argc, argv, env);
         return err;
     }
 
     /// ...option...
-    virtual int on_set_keys_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+    virtual int on_set_key_pair_option(const char_t* key_pair, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int on_keys_option
+    virtual int on_key_pair_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
-            if (!(err = on_set_keys_option(optarg, optind, argc, argv, env))) {
-                err = set_output_literal_keys_run(argc, argv, env);
+            if (!(err = on_set_key_pair_option(optarg, optind, argc, argv, env))) {
+                err = set_output_literal_key_pair_run(argc, argv, env);
             }
         } else {
-            err = set_output_keys_run(argc, argv, env);
+            err = set_output_key_pair_run(argc, argv, env);
         }
         return err;
     }
     virtual const char_t* keys_option_usage(const char_t*& optarg, const struct option* longopt) {
-        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTUSE;
-        optarg = XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTARG;
+        const char_t* chars = XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTARG;
         return chars;
     }
-    virtual int on_set_private_key_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+    virtual int on_set_private_key_option(const char_t* private_key, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
@@ -1182,7 +1191,7 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTARG;
         return chars;
     }
-    virtual int on_set_public_key_option(const char_t* key, int optind, int argc, char_t** argv, char_t** env) {
+    virtual int on_set_public_key_option(const char_t* public_key, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
@@ -1237,10 +1246,6 @@ protected:
         if ((optarg) && (optarg[0])) {
             if (!(err = on_set_exponent_option(optarg, optind, argc, argv, env))) {
                 if (!(err = set_output_literal_exponent_run(argc, argv, env))) {
-                    if (!(err = set_output_get_public_key_run(argc, argv, env))) {
-                        if (!(err = set_output_get_keys_run(argc, argv, env))) {
-                        }
-                    }
                 }
             }
         } else {
@@ -1291,6 +1296,7 @@ protected:
         } else {
         }
         err = set_on_set_hex_file_literal(argc, argv, env);
+        err = set_on_set_hex_file_literals(argc, argv, env);
         return err;
     }
     virtual const char_t* file_input_option_usage(const char_t*& optarg, const struct option* longopt) {
@@ -1303,8 +1309,8 @@ protected:
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         switch(optval) {
-        case XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C:
-            err = this->on_keys_option(optval, optarg, optname, optind, argc, argv, env);
+        case XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_C:
+            err = this->on_key_pair_option(optval, optarg, optname, optind, argc, argv, env);
             break;
         case XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C:
             err = this->on_private_key_option(optval, optarg, optname, optind, argc, argv, env);
@@ -1335,7 +1341,7 @@ protected:
     virtual const char_t* option_usage(const char_t*& optarg, const struct option* longopt) {
         const char_t* chars = "";
         switch(longopt->val) {
-        case XOS_APP_CONSOLE_RSA_MAIN_KEYS_OPTVAL_C:
+        case XOS_APP_CONSOLE_RSA_MAIN_KEY_PAIR_OPTVAL_C:
             chars = keys_option_usage(optarg, longopt);
             break;
         case XOS_APP_CONSOLE_RSA_MAIN_PRIVATE_KEY_OPTVAL_C:

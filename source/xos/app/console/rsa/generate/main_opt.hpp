@@ -25,11 +25,11 @@
 #include "xos/app/console/rsa/main_opt.hpp"
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPT "generate"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTARG_RESULT 0
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTARG ""
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTARG "[bits]"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTUSE "generate RSA keys"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTVAL_S "r"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTVAL_S "r::"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTVAL_C 'r'
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPTION \
    {XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_KEYS_OPT, \
@@ -45,30 +45,22 @@
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS_EXTEND \
-   XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_MILLER_RABIN_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_FERMAT_WITNESS_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_BN_INTEGER_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_GMP_INTEGER_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_INTEGER_BYTES_OPTVAL_S \
    XOS_APP_CONSOLE_PRIME_MAIN_INTEGER_BITS_OPTVAL_S \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_HOST_OPTVAL_S \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_PORT_OPTVAL_S \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_FILE_OPTVAL_S \
    XOS_APP_CONSOLE_TALAS_MAIN_OPTIONS_CHARS
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_OPTIONS \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_OPTIONS_EXTEND \
-   XOS_APP_CONSOLE_RSA_MAIN_EXPONENT_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_MILLER_RABIN_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_FERMAT_WITNESS_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_BN_INTEGER_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_GMP_INTEGER_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_INTEGER_BYTES_OPTION \
    XOS_APP_CONSOLE_PRIME_MAIN_INTEGER_BITS_OPTION \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_HOST_OPTION \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_PORT_OPTION \
-   XOS_APP_CONSOLE_PRIME_MAIN_INPUT_FILE_OPTION \
    XOS_APP_CONSOLE_TALAS_MAIN_OPTIONS_OPTIONS
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_ARGS 0
@@ -126,6 +118,36 @@ protected:
         return err;
     }
 
+    /// ...generate_keys_run
+    virtual int generate_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_generate_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_generate_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_generate_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_generate_keys_run(argc, argv, env))) {
+            int err2 = 0;
+            err = generate_keys_run(argc, argv, env);
+            if ((err2 = after_generate_keys_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_generate_keys_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_generate_keys_run;
+        return err;
+    }
+
     /// ...option...
     virtual int on_set_exponent_option(const char_t* exponent, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -154,7 +176,16 @@ protected:
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
+            if (!(err = this->on_set_integer_bits_option(optarg, optind, argc, argv, env))) {
+                if (!(err = this->set_generate_keys_run(argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
         } else {
+            if (!(err = this->set_generate_keys_run(argc, argv, env))) {
+            } else {
+            }
         }
         return err;
     }

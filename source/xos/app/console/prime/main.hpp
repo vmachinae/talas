@@ -415,11 +415,12 @@ protected:
 
     /// on_read...
     virtual ssize_t on_read(BN_BIGPRIME* n, size_t bytes) {
-        this->err(".", 1);
-        ++randoms_read_;
-        return bytes;
+        return on_read_prime(n, bytes);
     }
     virtual ssize_t on_read(MP_BIGPRIME* n, size_t bytes) {
+        return on_read_prime(n, bytes);
+    }
+    virtual ssize_t on_read_prime(void* n, size_t bytes) {
         this->err(".", 1);
         ++randoms_read_;
         return bytes;
