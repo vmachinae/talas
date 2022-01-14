@@ -68,6 +68,12 @@ $${TALAS_SRC}/talas/crypto/random/prime/small_primes.hpp \
 $${TALAS_SRC}/xos/app/console/prime/main_opt.hpp \
 $${TALAS_SRC}/xos/app/console/prime/main.hpp \
 \
+$${TALAS_SRC}/xos/app/console/rsa/base/main_opt.hpp \
+$${TALAS_SRC}/xos/app/console/rsa/base/main.hpp \
+\
+$${TALAS_SRC}/xos/app/console/rsa/pair/main_opt.hpp \
+$${TALAS_SRC}/xos/app/console/rsa/pair/main.hpp \
+\
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.hpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.hpp \
 \
@@ -87,6 +93,14 @@ $${TALAS_SRC}/talas/io/hex/read_to_arrays.cpp \
 \
 $${TALAS_SRC}/talas/crypto/random/prime/small_primes.cpp \
 
+rsa_base_SOURCES += \
+$${TALAS_SRC}/xos/app/console/rsa/base/main_opt.cpp \
+$${TALAS_SRC}/xos/app/console/rsa/base/main.cpp \
+
+rsa_pair_SOURCES += \
+$${TALAS_SRC}/xos/app/console/rsa/pair/main_opt.cpp \
+$${TALAS_SRC}/xos/app/console/rsa/pair/main.cpp \
+
 rsa_operate_SOURCES += \
 $${TALAS_SRC}/xos/app/console/rsa/main_opt.cpp \
 $${TALAS_SRC}/xos/app/console/rsa/main.cpp \
@@ -95,7 +109,9 @@ rsa_generate_SOURCES += \
 $${TALAS_SRC}/xos/app/console/rsa/generate/main_opt.cpp \
 $${TALAS_SRC}/xos/app/console/rsa/generate/main.cpp \
 
-rsa_SOURCES += $${rsa_operate_SOURCES}
+#rsa_SOURCES += $${rsa_base_SOURCES}
+rsa_SOURCES += $${rsa_pair_SOURCES}
+#rsa_SOURCES += $${rsa_operate_SOURCES}
 #rsa_SOURCES += $${rsa_generate_SOURCES}
 
 ########################################################################
