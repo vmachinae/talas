@@ -118,9 +118,9 @@ $${TALAS_SRC}/xos/app/console/rsa/generate/main.cpp \
 
 #rsa_SOURCES += $${rsa_base_SOURCES}
 #rsa_SOURCES += $${rsa_pair_SOURCES}
-rsa_SOURCES += $${rsa_test_SOURCES}
+rsa_SOURCES += $${rsa_generate_SOURCES}
+#rsa_SOURCES += $${rsa_test_SOURCES}
 #rsa_SOURCES += $${rsa_operate_SOURCES}
-#rsa_SOURCES += $${rsa_generate_SOURCES}
 
 ########################################################################
 # rsa FRAMEWORKS
