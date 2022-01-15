@@ -16,7 +16,7 @@
 ///   File: main.cpp
 ///
 /// Author: $author$
-///   Date: 1/10/2022
+///   Date: 1/15/2022
 ///////////////////////////////////////////////////////////////////////
 #include "xos/app/console/rsa/generate/main.hpp"
 

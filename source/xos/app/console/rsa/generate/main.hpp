@@ -16,13 +16,12 @@
 ///   File: main.hpp
 ///
 /// Author: $author$
-///   Date: 1/10/2022
+///   Date: 1/15/2022
 ///////////////////////////////////////////////////////////////////////
 #ifndef XOS_APP_CONSOLE_RSA_GENERATE_MAIN_HPP
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_HPP
 
 #include "xos/app/console/rsa/generate/main_opt.hpp"
-#include "xos/app/console/rsa/main.hpp"
 
 #include "talas/crypto/byte_array.hpp"
 #include "talas/crypto/random/pseudo.hpp"
@@ -48,8 +47,7 @@ typedef ::talas::crypto::random::prime::bn::reader_observer bn_reader_observer;
 
 /// class maint
 template 
-<class TMPReaderObserver = mp_reader_observer, 
- class TBNReaderObserver = bn_reader_observer, 
+<class TMPReaderObserver = mp_reader_observer, class TBNReaderObserver = bn_reader_observer, 
  class TExtends = xos::app::console::rsa::generate::main_opt, 
  class TImplements = typename TExtends::implements>
 
@@ -71,8 +69,7 @@ public:
 
     /// constructor / destructor
     maint()
-    : run_(0), 
-      run_generate_keys_(0),
+    : run_(0),
       read_primes_(0),
       rsa_exponent_(XOS_APP_CONSOLE_RSA_EXPONENT),
       rsa_modulus_bits_(XOS_APP_CONSOLE_RSA_MODULUS_BITS),
@@ -115,8 +112,6 @@ protected:
     typedef ::talas::crypto::rsa::mp::private_key mp_rsa_private_key_t;
     typedef ::talas::crypto::rsa::mp::public_key mp_rsa_public_key_t;
 
-    enum { modbytes_min = (512/8), modbytes_max = (4096/8) };
-
     /// ...run
     int (derives::*run_)(int argc, char_t** argv, char_t** env);
     virtual int run(int argc, char_t** argv, char_t** env) {
@@ -129,7 +124,8 @@ protected:
         return err;
     }
 
-    /// generate_rsa_run
+    /// ...generate_keys_run
+    using extends::generate_keys_run;
     virtual int generate_keys_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t expbytes = ((rsa_exponent_bits_ + 7) >> 3);
@@ -140,24 +136,13 @@ protected:
         crypto_byte_array_t exponent_array(rsa_exponent_, expbytes);
         byte_t* exponent = exponent_array.elements();
         if (!(expbytes != exponent_array.length()) && (exponent)) {
-            err = run_generate_keys
-            (modbytes, exponent, expbytes, pbytes, random, argc, argv, env);
+            err = this->generate_keys_run(modbytes, exponent, expbytes, pbytes, random, argc, argv, env);
         }
         return err;
     }
 
-    /// ...run_generate_keys
-    int (derives::*run_generate_keys_)(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env);
-    virtual int run_generate_keys(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (run_generate_keys_) {
-            err = (this->*run_generate_keys_)(modbytes, exponent, expbytes, pbytes, random, argc, argv, env);
-        } else {
-            err = run_bn_generate_keys(modbytes, exponent, expbytes, pbytes, random, argc, argv, env);
-        }
-        return err;
-    }
-    virtual int run_bn_generate_keys(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
+    /// ...bn_generate_keys_run
+    virtual int bn_generate_keys_run(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t modbits = (modbytes << 3);
         bn_rsa_public_key_t pub(modbytes, expbytes);
@@ -170,7 +155,7 @@ protected:
             if ((read_primes_)) {
                 this->errln();
             }
-            if (!(err = run_generated_keys(pub, prv, argc, argv, env))) {
+            if (!(err = generated_keys_run(pub, prv, argc, argv, env))) {
             } else {
             }
         } else {
@@ -178,7 +163,9 @@ protected:
         read_primes_ = 0;
         return err;
     }
-    virtual int run_mp_generate_keys(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
+
+    /// ...gmp_generate_keys_run
+    virtual int gmp_generate_keys_run(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t modbits = (modbytes << 3);
         mp_rsa_public_key_t pub(modbytes, expbytes);
@@ -191,7 +178,7 @@ protected:
             if ((read_primes_)) {
                 this->errln();
             }
-            if (!(err = run_generated_keys(pub, prv, argc, argv, env))) {
+            if (!(err = generated_keys_run(pub, prv, argc, argv, env))) {
             } else {
             }
         } else {
@@ -199,30 +186,91 @@ protected:
         read_primes_ = 0;
         return err;
     }
-    virtual int set_run_bn_generate_keys(int argc, char_t** argv, char_t** env) {
+
+    /// ...generated_keys_run
+    int (derives::*generated_keys_run_)(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env);
+    virtual int generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        run_generate_keys_ = &derives::run_bn_generate_keys;
-        return err;
-    }
-    virtual int set_run_mp_generate_keys(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        run_generate_keys_ = &derives::run_mp_generate_keys;
-        return err;
-    }
-    int (derives::*run_generated_keys_)
-    (rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env);
-    virtual int run_generated_keys
-    (rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (run_generated_keys_) {
-            err = (this->*run_generated_keys_)(pub, prv, argc, argv, env);
+        if (generated_keys_run_) {
+            err = (this->*generated_keys_run_)(pub, prv, argc, argv, env);
         } else {
-            err = run_generated_keys_output(pub, prv, argc, argv, env);
+            err = default_generated_keys_run(pub, prv, argc, argv, env);
         }
         return err;
     }
-    virtual int run_generated_keys_output
-    (rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+    virtual int default_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_output_generated_keys_run(pub, prv, argc, argv, env);
+        return err;
+    }
+    virtual int before_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_generated_keys_run(pub, prv, argc, argv, env))) {
+            int err2 = 0;
+            err = generated_keys_run(pub, prv, argc, argv, env);
+            if ((err2 = after_generated_keys_run(pub, prv, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...output_generated_keys_run
+    int (derives::*output_generated_keys_run_)(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env);
+    virtual int output_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_generated_keys_run_) {
+            err = (this->*output_generated_keys_run_)(pub, prv, argc, argv, env);
+        } else {
+            err = default_output_generated_keys_run(pub, prv, argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_output_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_output_x_generated_keys_run(pub, prv, argc, argv, env);
+        return err;
+    }
+    virtual int before_output_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_generated_keys_run(pub, prv, argc, argv, env))) {
+            int err2 = 0;
+            err = output_generated_keys_run(pub, prv, argc, argv, env);
+            if ((err2 = after_output_generated_keys_run(pub, prv, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...output_x_generated_keys_run
+    int (derives::*output_x_generated_keys_run_)(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env);
+    virtual int output_x_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (output_x_generated_keys_run_) {
+            err = (this->*output_x_generated_keys_run_)(pub, prv, argc, argv, env);
+        } else {
+            err = default_output_x_generated_keys_run(pub, prv, argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_output_x_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t modbytes = pub.modbytes();
         size_t expbytes = pub.expbytes();
@@ -255,14 +303,27 @@ protected:
         }
         return err;
     }
-
-    /// ...option...
-    virtual int on_set_integer_bits
-    (unsigned bits, int argc, char_t**argv, char_t**env) {
+    virtual int before_output_x_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        rsa_modulus_bits_ = bits;
         return err;
     }
+    virtual int after_output_x_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_x_generated_keys_run(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_x_generated_keys_run(pub, prv, argc, argv, env))) {
+            int err2 = 0;
+            err = output_x_generated_keys_run(pub, prv, argc, argv, env);
+            if ((err2 = after_output_x_generated_keys_run(pub, prv, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// on_read
     virtual ssize_t on_read(BN_BIGPRIME* n, size_t bytes) {
         return on_read_prime(n, bytes);
     }
@@ -275,115 +336,18 @@ protected:
         return bytes;
     }
 
-    /// ...get_exponent
-    const byte_t* (derives::*get_exponent_)(size_t &length);
-    virtual const byte_t* get_exponent(size_t &length) {
-        const byte_t* bytes = 0;
-        if (get_exponent_) {
-            bytes = (this->*get_exponent_)(length);
-        } else {
-            bytes = get_test_exponent(length);
-        }
-        return bytes;
-    }
-    virtual const byte_t* get_test_exponent(size_t &length) {
-        const byte_t* bytes = 0;
-        length = sizeof(::talas::app::console::rsa::rsa_public_exponent);
-        bytes = ::talas::app::console::rsa::rsa_public_exponent;
-        return bytes;
-    }
-    virtual const byte_t* get_literal_exponent(size_t &length) {
-        const byte_t* bytes = 0;
-        length = exponent_.length();
-        bytes = exponent_.elements();
-        return bytes;
-    }
-    virtual int set_get_test_exponent(int argc, char_t** argv, char_t** env) {
+    /// ...option...
+    virtual int on_set_modulus_bits
+    (unsigned bits, int argc, char_t**argv, char_t**env) {
         int err = 0;
-        get_exponent_ = &derives::get_literal_exponent;
+        rsa_modulus_bits_ = bits;
         return err;
     }
-    virtual int set_get_literal_exponent(int argc, char_t** argv, char_t** env) {
+    virtual int on_set_modulus_bytes
+    (unsigned bytes, int argc, char_t**argv, char_t**env) {
         int err = 0;
-        get_exponent_ = &derives::get_literal_exponent;
-        return err;
-    }
-
-    /// ...get_modulus
-    const byte_t* (derives::*get_modulus_)(size_t &length);
-    virtual const byte_t* get_modulus(size_t &length) {
-        const byte_t* bytes = 0;
-        if (get_modulus_) {
-            bytes = (this->*get_modulus_)(length);
-        } else {
-            bytes = get_test_modulus(length);
-        }
-        return bytes;
-    }
-    virtual const byte_t* get_test_modulus(size_t &length) {
-        const byte_t* bytes = 0;
-        length = sizeof(::talas::app::console::rsa::rsa_public_modulus);
-        bytes = ::talas::app::console::rsa::rsa_public_modulus;
-        return bytes;
-    }
-    virtual const byte_t* get_literal_modulus(size_t &length) {
-        const byte_t* bytes = 0;
-        length = modulus_.length();
-        bytes = modulus_.elements();
-        return bytes;;
-    }
-    virtual int set_get_test_modulus(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        get_modulus_ = &derives::get_test_modulus;
-        return err;
-    }
-    virtual int set_get_literal_modulus(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        get_modulus_ = &derives::get_literal_modulus;
-        return err;
-    }
-
-    /// ...get_p
-    const byte_t* (derives::*get_p_)
-    (const byte_t *&q, const byte_t *&dmp1, 
-     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length);
-    virtual const byte_t* get_p
-    (const byte_t *&q, const byte_t *&dmp1, 
-     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
-        const byte_t* bytes = 0;
-        if (get_p_) {
-            bytes = (this->*get_p_)(q, dmp1, dmq1, iqmp, length);
-        } else {
-            bytes = get_test_p(q, dmp1, dmq1, iqmp, length);
-        }
-        return bytes;
-    }
-    virtual const byte_t* get_test_p
-    (const byte_t *&q, const byte_t *&dmp1, 
-     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
-        const byte_t* bytes = 0;
-        length = sizeof(::talas::app::console::rsa::rsa_private_p);
-        bytes = ::talas::app::console::rsa::rsa_private_p;
-        q = ::talas::app::console::rsa::rsa_private_q;
-        dmp1 = ::talas::app::console::rsa::rsa_private_dmp1;
-        dmq1 = ::talas::app::console::rsa::rsa_private_dmq1;
-        iqmp = ::talas::app::console::rsa::rsa_private_iqmp;
-        return bytes;
-    }
-    virtual const byte_t* get_literal_p
-    (const byte_t *&q, const byte_t *&dmp1, 
-     const byte_t *&dmq1, const byte_t *&iqmp, size_t &length) {
-        const byte_t* bytes = 0;
-        return bytes;;
-    }
-    virtual int set_get_test_p(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        get_p_ = &derives::get_test_p;
-        return err;
-    }
-    virtual int set_get_literal_p(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        get_p_ = &derives::get_literal_p;
+        unsigned bits = (bytes << 3);
+        rsa_modulus_bits_ = bits;
         return err;
     }
 
@@ -393,9 +357,6 @@ protected:
     unsigned rsa_exponent_bits_, rsa_modulus_bits_;
     pseudo_random_seed_t pseudo_random_seed_;
     pseudo_random_t pseudo_random_;
-    literal_byte_array_t exponent_, modulus_, p_, q_, dmp1_, dmq1_, iqmp_;
-    literal_string_t exponent_string_, modulus_string_, public_string_, private_string_;
-    byte_t plain_[modbytes_max], cipher_[modbytes_max], decipher_[modbytes_max];
 }; /// class maint
 typedef maint<> main;
 
