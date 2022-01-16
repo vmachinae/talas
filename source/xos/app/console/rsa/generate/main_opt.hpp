@@ -346,12 +346,18 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_OPTARG;
         return chars;
     }
+    virtual int on_set_miller_rabin_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_miller_rabin_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
         } else {
+            err = on_set_miller_rabin_option(argc, argv, env);
         }
         return err;
     }
@@ -360,12 +366,18 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG;
         return chars;
     }
+    virtual int on_set_fermat_witness_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_fermat_witness_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         if ((optarg) && (optarg[0])) {
         } else {
+            err = on_set_fermat_witness_option(argc, argv, env);
         }
         return err;
     }

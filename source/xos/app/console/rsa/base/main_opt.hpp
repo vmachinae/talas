@@ -504,11 +504,17 @@ protected:
     }
 
     /// ...option...
+    virtual int on_set_bn_integer_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_bn_integer_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         err = set_bn_run(argc, argv, env);
+        err = this->on_set_bn_integer_option(argc, argv, env);
         return err;
     }
     virtual const char_t* bn_integer_option_usage(const char_t*& optarg, const struct option* longopt) {
@@ -516,11 +522,17 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_BASE_MAIN_BN_INTEGER_OPTARG;
         return chars;
     }
+    virtual int on_set_gmp_integer_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_gmp_integer_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         err = set_gmp_run(argc, argv, env);
+        err = this->on_set_gmp_integer_option(argc, argv, env);
         return err;
     }
     virtual const char_t* gmp_integer_option_usage(const char_t*& optarg, const struct option* longopt) {

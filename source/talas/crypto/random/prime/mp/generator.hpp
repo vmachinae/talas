@@ -82,12 +82,13 @@ public:
 
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    virtual bool create() {
+    virtual bool create(bool no_miller_rabin_test = false) {
         if ((this->destroyed())) {
             mpz_init_set_ui(&m_temp1, 0);
             mpz_init_set_ui(&m_temp2, 0);
 #if !defined(_RSA_NO_MILLER_RABIN_TEST)
             if ((m_miller_rabin.create())) {
+                m_no_miller_rabin_test = no_miller_rabin_test;
 #endif // !defined(_CRSA_NO_MILLER_RABIN_TEST)
                 this->set_is_created();
                 return true;
@@ -104,6 +105,7 @@ public:
             bool is_true = true;
             set_is_created(false);
 #if !defined(_RSA_NO_MILLER_RABIN_TEST)
+            m_no_miller_rabin_test = false;
             is_true = m_miller_rabin.destroy();
 #endif // !defined(_CRSA_NO_MILLER_RABIN_TEST)
             mpz_clear(&m_temp2);
@@ -212,13 +214,15 @@ public:
                     continue;
                 }
 #if !defined(_RSA_NO_MILLER_RABIN_TEST)
-                /* Perform the Miller Rabin primality test.
-                 */
-                if (!(m_miller_rabin.ProbablyPrime
-                    (prime, bytes, m_miller_rabin_reps, random))) {
-                    /* Failed the Miller Rabin probable primality test.
+                if (!(m_no_miller_rabin_test)) {
+                    /* Perform the Miller Rabin primality test.
                      */
-                    continue;
+                    if (!(m_miller_rabin.ProbablyPrime
+                        (prime, bytes, m_miller_rabin_reps, random))) {
+                        /* Failed the Miller Rabin probable primality test.
+                         */
+                        continue;
+                    }
                 }
 #endif // !defined(_CRSA_NO_MILLER_RABIN_TEST)
 

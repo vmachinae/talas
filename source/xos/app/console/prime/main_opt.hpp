@@ -411,10 +411,10 @@ protected:
         int err = 0;
         if ((optarg) && (optarg[0])) {
         } else {
+            err = set_prime_run(argc, argv, env);
+            err = set_run_generate_bn_prime(argc, argv, env);
+            err = set_run_miller_rabin_bn_prime(argc, argv, env);
         }
-        err = set_prime_run(argc, argv, env);
-        err = set_run_generate_bn_prime(argc, argv, env);
-        err = set_run_miller_rabin_bn_prime(argc, argv, env);
         return err;
     }
     virtual const char_t* bn_integer_option_usage(const char_t*& optarg, const struct option* longopt) {
@@ -428,10 +428,10 @@ protected:
         int err = 0;
         if ((optarg) && (optarg[0])) {
         } else {
+            err = set_prime_run(argc, argv, env);
+            err = set_run_generate_mp_prime(argc, argv, env);
+            err = set_run_miller_rabin_mp_prime(argc, argv, env);
         }
-        err = set_prime_run(argc, argv, env);
-        err = set_run_generate_mp_prime(argc, argv, env);
-        err = set_run_miller_rabin_mp_prime(argc, argv, env);
         return err;
     }
     virtual const char_t* gmp_integer_option_usage(const char_t*& optarg, const struct option* longopt) {

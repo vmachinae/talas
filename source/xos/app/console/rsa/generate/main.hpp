@@ -75,7 +75,8 @@ public:
       rsa_modulus_bits_(XOS_APP_CONSOLE_RSA_MODULUS_BITS),
       rsa_exponent_bits_(XOS_APP_CONSOLE_RSA_EXPONENT_BITS),
       pseudo_random_seed_(0),
-      pseudo_random_(pseudo_random_seed_) {
+      pseudo_random_(pseudo_random_seed_),
+      no_miller_rabin_test_(false) {
     }
     virtual ~maint() {
     }
@@ -144,14 +145,18 @@ protected:
     /// ...bn_generate_keys_run
     virtual int bn_generate_keys_run(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
         int err = 0;
+        const bool no_miller_rabin_test = no_miller_rabin_test_;
         size_t modbits = (modbytes << 3);
         bn_rsa_public_key_t pub(modbytes, expbytes);
         bn_rsa_private_key_t prv(pbytes);
         bn_rsa_key_generator_t generator(this);
         
         read_primes_ = 0;
-        this->errlln("bn library generate ", unsigned_to_string(modbits).chars(), " bit key pair", null);
-        if ((generator.generate(prv, pub, modbytes, exponent, expbytes, random))) {
+        this->errlln
+        ("bn library generate ", 
+         unsigned_to_string(modbits).chars(), " bit key pair", 
+         (no_miller_rabin_test_)?(""):(" with miller rabin"), null);
+        if ((generator.generate(prv, pub, modbytes, exponent, expbytes, random, no_miller_rabin_test))) {
             if ((read_primes_)) {
                 this->errln();
             }
@@ -167,14 +172,18 @@ protected:
     /// ...gmp_generate_keys_run
     virtual int gmp_generate_keys_run(size_t modbytes, const byte_t* exponent, size_t expbytes, size_t pbytes, random_reader_t &random, int argc, char_t** argv, char_t** env) {
         int err = 0;
+        const bool no_miller_rabin_test = no_miller_rabin_test_;
         size_t modbits = (modbytes << 3);
         mp_rsa_public_key_t pub(modbytes, expbytes);
         mp_rsa_private_key_t prv(pbytes);
         mp_rsa_key_generator_t generator(this);
 
         read_primes_ = 0;
-        this->errlln("gmp library generate ", unsigned_to_string(modbits).chars(), " bit key pair", null);
-        if ((generator.generate(prv, pub, modbytes, exponent, expbytes, random))) {
+        this->errlln
+        ("gmp library generate ", 
+         unsigned_to_string(modbits).chars(), " bit key pair", 
+         (no_miller_rabin_test_)?(""):(" with miller rabin"), null);
+        if ((generator.generate(prv, pub, modbytes, exponent, expbytes, random, no_miller_rabin_test))) {
             if ((read_primes_)) {
                 this->errln();
             }
@@ -337,6 +346,18 @@ protected:
     }
 
     /// ...option...
+    virtual int on_set_fermat_witness_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        no_miller_rabin_test_ = true;
+        return err;
+    }
+    virtual int on_set_miller_rabin_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        no_miller_rabin_test_ = false;
+        return err;
+    }
     virtual int on_set_modulus_bits
     (unsigned bits, int argc, char_t**argv, char_t**env) {
         int err = 0;
@@ -350,6 +371,18 @@ protected:
         rsa_modulus_bits_ = bits;
         return err;
     }
+    virtual int on_set_bn_integer_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        err = this->set_bn_generate_keys_run(argc, argv, env);
+        return err;
+    }
+    virtual int on_set_gmp_integer_option
+    (int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        err = this->set_gmp_generate_keys_run(argc, argv, env);
+        return err;
+    }
 
 protected:
     size_t read_primes_;
@@ -357,6 +390,7 @@ protected:
     unsigned rsa_exponent_bits_, rsa_modulus_bits_;
     pseudo_random_seed_t pseudo_random_seed_;
     pseudo_random_t pseudo_random_;
+    bool no_miller_rabin_test_;
 }; /// class maint
 typedef maint<> main;
 

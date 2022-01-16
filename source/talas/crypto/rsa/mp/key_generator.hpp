@@ -70,6 +70,17 @@ public:
     (private_key& privatekey, public_key& publickey,
      size_t modbytes, const byte_t* exponent, unsigned expbytes,
      random_reader_t& random, reader_observer_t* reader_observer = 0) {
+        const bool no_miller_rabin_test = false;
+        bool success = false;
+        success = generate
+        (privatekey, publickey, modbytes, exponent, expbytes, 
+         random, no_miller_rabin_test, reader_observer);
+        return success;
+    }
+    virtual bool generate
+    (private_key& privatekey, public_key& publickey,
+     size_t modbytes, const byte_t* exponent, unsigned expbytes,
+     random_reader_t& random, const bool& no_miller_rabin_test, reader_observer_t* reader_observer = 0) {
         bool success = false;
 
         BIGINT& p = privatekey.p();
@@ -92,7 +103,7 @@ public:
         ebits = expbytes*8;
         modbits = bits*2;
 
-        if ((m_prime_generator.create())) {
+        if ((m_prime_generator.create(no_miller_rabin_test))) {
             if ((publickey.create(modbytes,expbytes))) {
                 if ((privatekey.create(bytes))) {
                     BIGPRIME* pp = &p;
