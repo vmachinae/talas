@@ -64,6 +64,11 @@ $${TALAS_SRC}/talas/io/hex/read_to_array.hpp \
 $${TALAS_SRC}/talas/io/hex/read_to_arrays.hpp \
 \
 $${TALAS_SRC}/talas/crypto/random/prime/small_primes.hpp \
+$${TALAS_SRC}/talas/crypto/random/prime/bn/generator.hpp \
+$${TALAS_SRC}/talas/crypto/random/prime/mp/generator.hpp \
+\
+$${TALAS_SRC}/talas/crypto/rsa/bn/key_generator.hpp \
+$${TALAS_SRC}/talas/crypto/rsa/mp/key_generator.hpp \
 \
 $${TALAS_SRC}/xos/app/console/prime/main_opt.hpp \
 $${TALAS_SRC}/xos/app/console/prime/main.hpp \
