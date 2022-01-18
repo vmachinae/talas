@@ -412,9 +412,13 @@ protected:
         if (on_set_hex_literal_) {
             err = (this->*on_set_hex_literal_)(array, literal, argc, argv, env);
         } else {
-            /// err = on_set_hex_string_literal(array, literal, argc, argv, env);
-            err = on_set_hex_file_literal(array, literal, argc, argv, env);
+            err = default_on_set_hex_literal(array, literal, argc, argv, env);
         }
+        return err;
+    }
+    virtual int default_on_set_hex_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = on_set_hex_string_literal(array, literal, argc, argv, env);
         return err;
     }
     virtual int on_set_hex_string_literal(::talas::byte_array_t &array, ::talas::string_t &literal, int argc, char_t** argv, char_t** env) {

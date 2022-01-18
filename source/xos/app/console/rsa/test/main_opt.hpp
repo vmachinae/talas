@@ -21,19 +21,40 @@
 #ifndef XOS_APP_CONSOLE_RSA_TEST_MAIN_OPT_HPP
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_OPT_HPP
 
-#include "xos/app/console/rsa/pair/main.hpp"
+#include "xos/app/console/rsa/operate/main.hpp"
+
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPT "test"
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG ""
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTUSE "Test RSA key pair"
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_S "t"
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_C 't'
+#define XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTION \
+   {XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPT, \
+    XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_C}, \
 
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_CHARS_EXTEND \
+    XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_OPTIONS_EXTEND \
+    XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTION \
 
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_CHARS \
+   XOS_APP_CONSOLE_RSA_OPERATE_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_CHARS_EXTEND \
-   XOS_APP_CONSOLE_RSA_PAIR_MAIN_OPTIONS_CHARS
+   XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS_EXTEND \
+   XOS_APP_CONSOLE_RSA_BASE_MAIN_FILE_INPUT_OPTVAL_S \
+   XOS_APP_CONSOLE_TALAS_MAIN_OPTIONS_CHARS \
 
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_OPTIONS \
+   XOS_APP_CONSOLE_RSA_OPERATE_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_RSA_TEST_MAIN_OPTIONS_OPTIONS_EXTEND \
-   XOS_APP_CONSOLE_RSA_PAIR_MAIN_OPTIONS_OPTIONS
+   XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_OPTIONS_EXTEND \
+   XOS_APP_CONSOLE_RSA_BASE_MAIN_FILE_INPUT_OPTION \
+   XOS_APP_CONSOLE_TALAS_MAIN_OPTIONS_OPTIONS \
 
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_ARGS 0
 #define XOS_APP_CONSOLE_RSA_TEST_MAIN_ARGV 0,
@@ -46,7 +67,7 @@ namespace test {
 
 /// class main_optt
 template 
-<class TExtends = xos::app::console::rsa::pair::main, 
+<class TExtends = xos::app::console::rsa::operate::main, 
  class TImplements = typename TExtends::implements>
 
 class exported main_optt: virtual public TImplements, public TExtends {
@@ -90,62 +111,91 @@ protected:
         return err;
     }
 
-    /// default_..._run
-    virtual int default_bn_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        err = bn_test_run(argc, argv, env);
-        return err;
-    }
-    virtual int default_gmp_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        err = gmp_test_run(argc, argv, env);
-        return err;
-    }
+     /// ...test_key_pair_run
+     int (derives::*test_key_pair_run_)(int argc, char_t** argv, char_t** env);
+     virtual int test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         if (test_key_pair_run_) {
+             err = (this->*test_key_pair_run_)(argc, argv, env);
+         } else {
+             err = default_test_key_pair_run(argc, argv, env);
+         }
+         return err;
+     }
+     virtual int default_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         err = all_bn_test_key_pair_run(argc, argv, env);
+         return err;
+     }
+     virtual int before_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         return err;
+     }
+     virtual int after_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         return err;
+     }
+     virtual int all_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         if (!(err = before_test_key_pair_run(argc, argv, env))) {
+             int err2 = 0;
+             err = test_key_pair_run(argc, argv, env);
+             if ((err2 = after_test_key_pair_run(argc, argv, env))) {
+                 if (!(err)) err = err2;
+             }
+         }
+         return err;
+     }
+     virtual int set_test_key_pair_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         run_ = &derives::all_test_key_pair_run;
+         return err;
+     }
 
-    /// ...bn_test_run
-    virtual int bn_test_run(int argc, char_t** argv, char_t** env) {
+     /// ...bn_test_key_pair_run
+    virtual int bn_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int before_bn_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_bn_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_bn_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_bn_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_bn_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_bn_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_bn_test_run(argc, argv, env))) {
+        if (!(err = before_bn_test_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = bn_test_run(argc, argv, env);
-            if ((err2 = after_bn_test_run(argc, argv, env))) {
+            err = bn_test_key_pair_run(argc, argv, env);
+            if ((err2 = after_bn_test_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
 
-    /// ...gmp_test_run
-    virtual int gmp_test_run(int argc, char_t** argv, char_t** env) {
+    /// ...gmp_test_key_pair_run
+    virtual int gmp_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int before_gmp_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_gmp_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_gmp_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_gmp_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_gmp_test_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_gmp_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_gmp_test_run(argc, argv, env))) {
+        if (!(err = before_gmp_test_key_pair_run(argc, argv, env))) {
             int err2 = 0;
-            err = gmp_test_run(argc, argv, env);
-            if ((err2 = after_gmp_test_run(argc, argv, env))) {
+            err = gmp_test_key_pair_run(argc, argv, env);
+            if ((err2 = after_gmp_test_key_pair_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -153,11 +203,29 @@ protected:
     }
 
     /// ...option...
+    virtual int on_test_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            err = set_test_key_pair_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* test_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTUSE;
+        optarg = XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTARG;
+        return chars;
+    }
     virtual int on_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
         switch(optval) {
+        case XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_C:
+            err = this->on_test_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
         default:
             err = extends::on_option(optval, optarg, optname, optind, argc, argv, env);
         }
@@ -166,6 +234,9 @@ protected:
     virtual const char_t* option_usage(const char_t*& optarg, const struct option* longopt) {
         const char_t* chars = "";
         switch(longopt->val) {
+        case XOS_APP_CONSOLE_RSA_TEST_MAIN_TEST_OPTVAL_C:
+            chars = this->test_option_usage(optarg, longopt);
+            break;
         default:
             chars = extends::option_usage(optarg, longopt);
             break;

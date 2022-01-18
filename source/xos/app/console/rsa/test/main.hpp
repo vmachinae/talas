@@ -75,8 +75,8 @@ protected:
         return err;
     }
 
-    /// ...bn_literal_run
-    virtual int bn_literal_run(int argc, char_t** argv, char_t** env) {
+    /// ...bn_test_key_pair_run
+    virtual int bn_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t modulus_length = 0, exponent_length = 0;
         const byte_t *modulus = 0, *exponent = 0;
@@ -90,14 +90,14 @@ protected:
             if ((p = this->get_p(q, dmp1, dmq1, iqmp, p_length)) && (p_length)) {
 
                 ::talas::crypto::rsa::bn::private_key prv(p, q, dmp1, dmq1, iqmp, p_length);
-                err = run_test(pub, prv, argc, argv, env);
+                err = run_test_key_pair(pub, prv, argc, argv, env);
             }
         }
         return err;
     }
 
-    /// ...gmp_literal_run
-    virtual int gmp_literal_run(int argc, char_t** argv, char_t** env) {
+    /// ...gmp_test_key_pair_run
+    virtual int gmp_test_key_pair_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         size_t modulus_length = 0, exponent_length = 0;
         const byte_t *modulus = 0, *exponent = 0;
@@ -111,49 +111,15 @@ protected:
             if ((p = this->get_p(q, dmp1, dmq1, iqmp, p_length)) && (p_length)) {
 
                 ::talas::crypto::rsa::mp::private_key prv(p, q, dmp1, dmq1, iqmp, p_length);
-                err = run_test(pub, prv, argc, argv, env);
+                err = run_test_key_pair(pub, prv, argc, argv, env);
             }
         }
         return err;
     }
 
-    /// ...bn_test_run
-    virtual int bn_test_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-
-        ::talas::crypto::rsa::bn::public_key pub
-        (::talas::app::console::rsa::rsa_public_modulus, sizeof(::talas::app::console::rsa::rsa_public_modulus),
-         ::talas::app::console::rsa::rsa_public_exponent, sizeof(::talas::app::console::rsa::rsa_public_exponent));
-
-        ::talas::crypto::rsa::bn::private_key prv
-        (::talas::app::console::rsa::rsa_private_p, ::talas::app::console::rsa::rsa_private_q, 
-         ::talas::app::console::rsa::rsa_private_dmp1, ::talas::app::console::rsa::rsa_private_dmq1, 
-         ::talas::app::console::rsa::rsa_private_iqmp, sizeof(::talas::app::console::rsa::rsa_private_p));
-        
-        err = run_test(pub, prv, argc, argv, env);
-        return err;
-    }
-
-    /// ...gmp_test_run
-    virtual int gmp_test_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-
-        ::talas::crypto::rsa::mp::public_key pub
-        (::talas::app::console::rsa::rsa_public_modulus, sizeof(::talas::app::console::rsa::rsa_public_modulus),
-         ::talas::app::console::rsa::rsa_public_exponent, sizeof(::talas::app::console::rsa::rsa_public_exponent));
-
-        ::talas::crypto::rsa::mp::private_key prv
-        (::talas::app::console::rsa::rsa_private_p, ::talas::app::console::rsa::rsa_private_q, 
-         ::talas::app::console::rsa::rsa_private_dmp1, ::talas::app::console::rsa::rsa_private_dmq1, 
-         ::talas::app::console::rsa::rsa_private_iqmp, sizeof(::talas::app::console::rsa::rsa_private_p));
-        
-        err = run_test(pub, prv, argc, argv, env);
-        return err;
-    }
-
-    /// test
+    /// run_test_key_pair
     template <typename rsa_public_key_t, typename rsa_private_key_t>
-    int run_test(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
+    int run_test_key_pair(rsa_public_key_t& pub, rsa_private_key_t& prv, int argc, char_t** argv, char_t** env) {
         int err = 0;
         ssize_t size = 0, modbytes = pub.modbytes();
 
@@ -257,7 +223,6 @@ protected:
         modbytes_min = 512/8,
         modbytes_max = 4096/8
     };
-
     byte_t plain[modbytes_max], 
            cipher[modbytes_max], 
            decipher[modbytes_max];

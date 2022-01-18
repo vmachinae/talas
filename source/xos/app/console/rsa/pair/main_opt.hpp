@@ -23,7 +23,7 @@
 
 #include "xos/app/console/rsa/base/main.hpp"
 
-#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPT "key-pair"
+#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPT "key"
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTARG "[string]"
@@ -36,7 +36,7 @@
     XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPT "private-key"
+#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPT "private"
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTARG "[string]"
@@ -49,7 +49,7 @@
     XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPT "public-key"
+#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPT "public"
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPTARG "[string]"
@@ -80,8 +80,8 @@
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTARG "[string]"
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTUSE "RSA public exponent"
-#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTVAL_S "e::"
-#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTVAL_C 'e'
+#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTVAL_S "x::"
+#define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTVAL_C 'x'
 #define XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTION \
    {XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPT, \
     XOS_APP_CONSOLE_RSA_PAIR_MAIN_EXPONENT_OPTARG_REQUIRED, \
@@ -1036,6 +1036,10 @@ protected:
     }
 
     /// ...option...
+    virtual int on_key_pair_option_set(const char_t* key_pair, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_set_key_pair_option(const char_t* key_pair, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
@@ -1057,6 +1061,10 @@ protected:
         const char_t* chars = XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTUSE;
         optarg = XOS_APP_CONSOLE_RSA_PAIR_MAIN_KEY_PAIR_OPTARG;
         return chars;
+    }
+    virtual int on_private_key_option_set(const char_t* private_key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
     }
     virtual int on_set_private_key_option(const char_t* private_key, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -1080,6 +1088,10 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_PAIR_MAIN_PRIVATE_KEY_OPTARG;
         return chars;
     }
+    virtual int on_public_key_option_set(const char_t* public_key, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_set_public_key_option(const char_t* public_key, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
@@ -1102,6 +1114,10 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_PAIR_MAIN_PUBLIC_KEY_OPTARG;
         return chars;
     }
+    virtual int on_spublic_modulus_option_set(const char_t* modulus, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
     virtual int on_set_public_modulus_option(const char_t* modulus, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
@@ -1123,6 +1139,10 @@ protected:
         const char_t* chars = XOS_APP_CONSOLE_RSA_PAIR_MAIN_MODULUS_OPTUSE;
         optarg = XOS_APP_CONSOLE_RSA_PAIR_MAIN_MODULUS_OPTARG;
         return chars;
+    }
+    virtual int on_public_exponent_option_set(const char_t* exponent, int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
     }
     virtual int on_set_public_exponent_option(const char_t* exponent, int optind, int argc, char_t** argv, char_t** env) {
         int err = 0;

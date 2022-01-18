@@ -160,6 +160,10 @@ protected:
             if ((read_primes_)) {
                 this->errln();
             }
+            this->errlln
+            ("bn library generated ", 
+             unsigned_to_string(modbits).chars(), " bit key pair", 
+             (no_miller_rabin_test_)?(""):(" with miller rabin"), null);
             if (!(err = generated_keys_run(pub, prv, argc, argv, env))) {
             } else {
             }
@@ -187,6 +191,10 @@ protected:
             if ((read_primes_)) {
                 this->errln();
             }
+            this->errlln
+            ("gmp library generated ", 
+             unsigned_to_string(modbits).chars(), " bit key pair", 
+             (no_miller_rabin_test_)?(""):(" with miller rabin"), null);
             if (!(err = generated_keys_run(pub, prv, argc, argv, env))) {
             } else {
             }
@@ -330,6 +338,18 @@ protected:
             }
         }
         return err;
+    }
+
+    /// ...output_modulus_bits_run
+    virtual int output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         this->outln(unsigned_to_string(rsa_modulus_bits_).chars());
+         return err;
+    }
+    virtual int output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         this->outln(unsigned_to_string(rsa_modulus_bits_ >> 3).chars());
+         return err;
     }
 
     /// on_read

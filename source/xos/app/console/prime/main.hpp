@@ -413,6 +413,27 @@ protected:
         return err;
     }
 
+    /// ...output_integer_bytes_run
+    virtual int output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        this->outln(unsigned_to_string(prime_bits_ >> 3).chars());
+        return err;
+    }
+
+    /// ...output_integer_bits_run
+    virtual int output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        this->outln(unsigned_to_string(prime_bits_).chars());
+        return err;
+    }
+
+    virtual int on_set_integer_bits
+    (unsigned bits, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        prime_bits_ = bits;
+        return err;
+    }
+
     /// on_read...
     virtual ssize_t on_read(BN_BIGPRIME* n, size_t bytes) {
         return on_read_prime(n, bytes);

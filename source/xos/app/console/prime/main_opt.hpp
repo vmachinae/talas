@@ -357,6 +357,66 @@ protected:
         return err;
     }
 
+    /// ...output_integer_bits_run
+    virtual int output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_integer_bits_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_integer_bits_run(argc, argv, env);
+            if ((err2 = after_output_integer_bits_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_integer_bits_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_output_integer_bits_run;
+        return err;
+    }
+
+    /// ...output_integer_bytes_run
+    virtual int output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_output_integer_bytes_run(argc, argv, env))) {
+            int err2 = 0;
+            err = output_integer_bytes_run(argc, argv, env);
+            if ((err2 = after_output_integer_bytes_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_output_integer_bytes_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_output_integer_bytes_run;
+        return err;
+    }
+
     /// ...option...
     virtual int on_generate_prime_option
     (int optval, const char_t* optarg, const char_t* optname,
@@ -472,7 +532,9 @@ protected:
             } else {
             }
         } else {
-            err = set_prime_run(argc, argv, env);
+            if (!(err = set_output_integer_bytes_run(argc, argv, env))) {
+            } else {
+            }
         }
         return err;
     }
@@ -512,7 +574,9 @@ protected:
             } else {
             }
         } else {
-            err = set_prime_run(argc, argv, env);
+            if (!(err = set_output_integer_bits_run(argc, argv, env))) {
+            } else {
+            }
         }
         return err;
     }

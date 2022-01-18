@@ -37,20 +37,20 @@
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPT "miller-rabin"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPT "miller"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG ""
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTUSE "do miller rabin primality test"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTVAL_S "r"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTVAL_C 'r'
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTVAL_S "m"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTVAL_C 'm'
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTION \
    {XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG_REQUIRED, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MILLER_RABIN_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPT "fermat-witness"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPT "witness"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_NONE
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPTARG ""
@@ -63,7 +63,7 @@
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_FERMAT_WITNESS_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPT "modulus-bits"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPT "bits"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPTARG "[number]"
@@ -76,7 +76,7 @@
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BITS_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPT "modulus-bytes"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPT "bytes"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPTARG "[number]"
@@ -89,31 +89,31 @@
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_MODULUS_BYTES_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPT "random-host"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPT "host"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG_RESULT 0
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG "[{ name | ddd.ddd.ddd.ddd | ...}]"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTUSE "random input host or address"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_S "o::"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_C 'o'
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG "[{ name | ddd.ddd.ddd.ddd |...}[:{ 0..2^16-1 }]]"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTUSE "random input host"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_S "h::"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_C 'h'
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTION \
    {XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG_REQUIRED, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG_RESULT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_C}, \
 
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPT "random-port"
+/*#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPT "port"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG_RESULT 0
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG "[{ 0..2^16-1 }]"
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTUSE "random input port number"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_S "p::"
-#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C 'p'
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_S "t::"
+#define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C 't'
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTION \
    {XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPT, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG_REQUIRED, \
     XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG_RESULT, \
-    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C}, \
+    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C}, \*/
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_OPTVAL_S \
@@ -125,7 +125,7 @@
    XOS_APP_CONSOLE_RSA_BASE_MAIN_BN_INTEGER_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_BASE_MAIN_GMP_INTEGER_OPTVAL_S \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_S \
-   XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_S \
+   /*XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_S \*/
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_GENERATE_OPTION \
@@ -137,7 +137,7 @@
    XOS_APP_CONSOLE_RSA_BASE_MAIN_BN_INTEGER_OPTION \
    XOS_APP_CONSOLE_RSA_BASE_MAIN_GMP_INTEGER_OPTION \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTION \
-   XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTION \
+   /*XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTION \*/
 
 #define XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_RSA_GENERATE_MAIN_OPTIONS_CHARS_EXTEND \
@@ -330,7 +330,67 @@ protected:
         return err;
     }
 
-    /// ...option...
+    /// ...output_modulus_bits_run
+     virtual int output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         return err;
+     }
+     virtual int before_output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         return err;
+     }
+     virtual int after_output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         return err;
+     }
+     virtual int all_output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         if (!(err = before_output_modulus_bits_run(argc, argv, env))) {
+             int err2 = 0;
+             err = output_modulus_bits_run(argc, argv, env);
+             if ((err2 = after_output_modulus_bits_run(argc, argv, env))) {
+                 if (!(err)) err = err2;
+             }
+         }
+         return err;
+     }
+     virtual int set_output_modulus_bits_run(int argc, char_t** argv, char_t** env) {
+         int err = 0;
+         run_ = &derives::all_output_modulus_bits_run;
+         return err;
+     }
+
+     /// ...output_modulus_bytes_run
+      virtual int output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+          int err = 0;
+          return err;
+      }
+      virtual int before_output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+          int err = 0;
+          return err;
+      }
+      virtual int after_output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+          int err = 0;
+          return err;
+      }
+      virtual int all_output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+          int err = 0;
+          if (!(err = before_output_modulus_bytes_run(argc, argv, env))) {
+              int err2 = 0;
+              err = output_modulus_bytes_run(argc, argv, env);
+              if ((err2 = after_output_modulus_bytes_run(argc, argv, env))) {
+                  if (!(err)) err = err2;
+              }
+          }
+          return err;
+      }
+      virtual int set_output_modulus_bytes_run(int argc, char_t** argv, char_t** env) {
+          int err = 0;
+          run_ = &derives::all_output_modulus_bytes_run;
+          return err;
+      }
+ 
+     /// ...option...
     virtual int on_generate_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
@@ -405,6 +465,9 @@ protected:
             } else {
             }
         } else {
+            if (!(err = set_output_modulus_bits_run(argc, argv, env))) {
+            } else {
+            }
         }
         return err;
     }
@@ -432,6 +495,9 @@ protected:
             } else {
             }
         } else {
+            if (!(err = set_output_modulus_bytes_run(argc, argv, env))) {
+            } else {
+            }
         }
         return err;
     }
@@ -454,7 +520,7 @@ protected:
         optarg = XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTARG;
         return chars;
     }
-    virtual int on_random_port_option
+    /*virtual int on_random_port_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
         int err = 0;
@@ -467,7 +533,7 @@ protected:
         const char_t* chars = XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTUSE;
         optarg = XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTARG;
         return chars;
-    }
+    }*/
     virtual int on_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
@@ -491,9 +557,9 @@ protected:
         case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_C:
             err = this->on_random_host_option(optval, optarg, optname, optind, argc, argv, env);
             break;
-        case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C:
+        /*case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C:
             err = this->on_random_port_option(optval, optarg, optname, optind, argc, argv, env);
-            break;
+            break;*/
         default:
             err = extends::on_option(optval, optarg, optname, optind, argc, argv, env);
         }
@@ -520,9 +586,9 @@ protected:
         case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_HOST_OPTVAL_C:
             chars = this->random_host_option_usage(optarg, longopt);
             break;
-        case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C:
+        /*case XOS_APP_CONSOLE_RSA_GENERATE_MAIN_RANDOM_PORT_OPTVAL_C:
             chars = this->random_port_option_usage(optarg, longopt);
-            break;
+            break;*/
         default:
             chars = extends::option_usage(optarg, longopt);
             break;

@@ -259,6 +259,7 @@ protected:
         err = this->on_set_hex_literals(exponent_, modulus_, public_string_, argc, argv, env);
         err = this->set_get_literal_exponent(argc, argv, env);
         err = this->set_get_literal_modulus(argc, argv, env);
+        err = this->on_public_key_option_set(public_key, optind, argc, argv, env);
         return err;
     }
     virtual int on_set_private_key_option(const char_t* private_key, int optind, int argc, char_t** argv, char_t** env) {
@@ -266,6 +267,7 @@ protected:
         private_string_.assign(private_key);
         err = this->on_set_hex_literals(p_, q_, dmp1_, dmq1_, iqmp_, private_string_, argc, argv, env);
         err = this->set_get_literal_p(argc, argv, env);
+        err = this->on_private_key_option_set(private_key, optind, argc, argv, env);
         return err;
     }
     virtual int on_set_key_pair_option(const char_t* key_pair, int optind, int argc, char_t** argv, char_t** env) {
